@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
@@ -24,12 +23,32 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(document: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        document: document,
+      },
+    });
+
+    if (!user) throw new NotFoundException();
+
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  // update(id: number, updateUserDto: UpdateUserDto) {
+  //   return `This action updates a #${id} user`;
+  // }
+
+  async findRoles(document: string) {
+    const roles = await this.prisma.role.findMany({
+      where: {
+        user: {
+          document: document,
+        },
+      },
+    });
+
+    return roles;
   }
 
   remove(id: number) {

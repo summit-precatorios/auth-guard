@@ -27,6 +27,7 @@ model user {
   deletedAt     DateTime? @db.Timestamp()
   avatarUrl     String?   @db.Text
   verifiedEmail Boolean?  @default(false) @db.Boolean
+  roles         role[]
 }
 
 model role {
@@ -35,6 +36,8 @@ model role {
   description String?   @db.VarChar(75)
   createdAt   DateTime  @default(now()) @db.Timestamp()
   deletedAt   DateTime? @db.Timestamp()
+  user        user?     @relation(fields: [userId], references: [id])
+  userId      String?
 }
 
 model realm {
