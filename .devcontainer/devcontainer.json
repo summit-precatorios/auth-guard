@@ -10,7 +10,8 @@
 		"ghcr.io/devcontainers-contrib/features/nestjs-cli:2": {},
 		"ghcr.io/devcontainers-contrib/features/prisma:2": {},
 		"ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {},
-		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {}
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+		"ghcr.io/devcontainers/features/github-cli": {}
 	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
@@ -20,7 +21,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "yarn install",
+	"postCreateCommand": "docker compose up --build -d",
 
 	// Configure tool-specific properties.
 	"customizations": {
