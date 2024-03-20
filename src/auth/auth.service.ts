@@ -24,13 +24,6 @@ export class AuthService {
     return user;
   }
 
-  private async encrypt(password: string) {
-    const SALT = await genSalt();
-    const encryptedPassword = await hash(password, SALT);
-
-    return encryptedPassword;
-  }
-
   async signIn(command: AuthSignInCommand): Promise<{ access_token: string }> {
     try {
       const user = await this.userService.findOne(command.document);
@@ -55,15 +48,20 @@ export class AuthService {
     payload: AuthJwtSignCommand,
   ): Promise<{ access_token: string }> {
     const roles = await this.userService.findRoles(payload.document);
-    const userRoles: string[] = roles.map((role: any) => {
-      return role.name;
-    });
 
     return {
       access_token: await this.jwtService.signAsync({
         payload,
-        roles: userRoles,
+        roles: roles.map((role) => {
+          return role.name;
+        }),
       }),
     };
+  }
+  private async encrypt(password: string) {
+    const SALT = await genSalt();
+    const encryptedPassword = await hash(password, SALT);
+
+    return encryptedPassword;
   }
 }
