@@ -2,9 +2,10 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { UserService } from 'src/user/user.service';
 import { AuthSignInCommand } from './commands/auth-sign-in.command';
-import { compare } from 'bcrypt';
+import { compare, genSalt, hash } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command';
+import { AuthRegisterCommand } from './commands/auth-register.command';
 
 @Injectable()
 export class AuthService {
@@ -12,26 +13,23 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
-  // async register(command: AuthRegisterCommand) {
-  //   const user = await this.userService.create({
-  //     data: {
-  //       document: command.document,
-  //       email: command.email,
-  //       firstName: command.firstName,
-  //       lastName: command.lastName,
-  //       password: await this.encrypt(command.password),
-  //     },
-  //   });
+  async register(command: AuthRegisterCommand) {
+    const enchitmentCommand: AuthRegisterCommand = {
+      ...command,
+      password: await this.encrypt(command.password),
+    };
 
-  //   return user;
-  // }
+    const user = await this.userService.create(enchitmentCommand);
 
-  // private async encrypt(password: string) {
-  //   const SALT = await genSalt();
-  //   const encryptedPassword = await hash(password, SALT);
+    return user;
+  }
 
-  //   return encryptedPassword;
-  // }
+  private async encrypt(password: string) {
+    const SALT = await genSalt();
+    const encryptedPassword = await hash(password, SALT);
+
+    return encryptedPassword;
+  }
 
   async signIn(command: AuthSignInCommand): Promise<{ access_token: string }> {
     try {
@@ -57,7 +55,7 @@ export class AuthService {
     payload: AuthJwtSignCommand,
   ): Promise<{ access_token: string }> {
     const roles = await this.userService.findRoles(payload.document);
-    const userRoles: string[] = roles.map((role) => {
+    const userRoles: string[] = roles.map((role: any) => {
       return role.name;
     });
 
