@@ -48,6 +48,13 @@ export class UserService {
       where: {
         document: document,
       },
+      select: {
+        roles: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
 
     if (!user) throw new NotFoundException();

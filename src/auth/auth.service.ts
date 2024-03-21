@@ -7,6 +7,17 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command';
 import { AuthRegisterCommand } from './commands/auth-register.command';
 
+interface jwtDataPayload {
+  payload: {
+    document: string;
+    email: string;
+    fistName: string;
+    lastName: string;
+    avatarUrl: string | null;
+  };
+  roles: Array<string>;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -42,6 +53,13 @@ export class AuthService {
     } catch (e) {
       throw new UnauthorizedException('Login e/ou senha incorretos');
     }
+  }
+
+  async verify(token: string) {
+    const data: jwtDataPayload = this.jwtService.verify(token);
+    console.log(data);
+
+    return data;
   }
 
   private async providerAccessToken(
