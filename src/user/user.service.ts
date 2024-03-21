@@ -19,8 +19,28 @@ export class UserService {
     return response;
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    const users = await this.prisma.user.findMany({
+      select: {
+        avatarUrl: true,
+        contact: true,
+        createdAt: true,
+        deletedAt: true,
+        document: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        roles: {
+          select: {
+            name: true,
+            description: true,
+          },
+        },
+        verifiedEmail: true,
+      },
+    });
+
+    return users;
   }
 
   async findOne(document: string) {
