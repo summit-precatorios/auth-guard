@@ -1,22 +1,44 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaClient } from '@prisma/client';
+import { CreateUserCommandRequest } from './requests/create-user-command.request';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaClient) {}
-  async create(createUserDto: CreateUserDto) {
+  async create(command: CreateUserCommandRequest) {
     const response = await this.prisma.user.create({
       data: {
-        document: createUserDto.document,
-        email: createUserDto.email,
-        firstName: createUserDto.firstName,
-        lastName: createUserDto.lastName,
-        password: createUserDto.password,
+        document: command.document,
+        email: command.email,
+        firstName: command.firstName,
+        lastName: command.lastName,
+        password: command.password,
       },
     });
 
     return response;
+  }
+
+  async createUserAndProviderDefaultRole(command: CreateUserCommandRequest) {
+    return await this.prisma.$transaction(async (context) => {
+      const user = await context.user.create({
+        data: {
+          document: command.document,
+          email: command.email,
+          firstName: command.firstName,
+          lastName: command.lastName,
+          password: command.password,
+        },
+      });
+
+      await context.role.create({
+        data: {
+          name: 'common-user',
+          description: 'Perfil de usuário comum',
+          userId: user.id,
+        },
+      });
+    });
   }
 
   async findAll() {

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './requests/create-user.dto';
 import { AuthGuard } from 'src/guard/auth.guard';
 import { Role, Roles } from 'src/decorators/roles.decorator';
 
@@ -13,7 +13,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
   @UseGuards(AuthGuard)
-  @Roles(Role.Admin)
+  @Roles(Role.User)
   @Get()
   findAll() {
     return this.userService.findAll();

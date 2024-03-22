@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 import { UserService } from 'src/user/user.service';
 import { AuthSignInCommand } from './commands/auth-sign-in.command';
@@ -31,9 +35,16 @@ export class AuthService {
       password: await this.encrypt(command.password),
     };
 
-    const user = await this.userService.create(enchitmentCommand);
+    try {
+      const response =
+        await this.userService.createUserAndProviderDefaultRole(
+          enchitmentCommand,
+        );
 
-    return user;
+      return response;
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 
   async signIn(command: AuthSignInCommand): Promise<{ access_token: string }> {
