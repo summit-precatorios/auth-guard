@@ -48,7 +48,7 @@ export class UserService {
       where: {
         document: document,
       },
-      select: {
+      include: {
         roles: {
           select: {
             name: true,
@@ -61,10 +61,6 @@ export class UserService {
 
     return user;
   }
-
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
 
   async findRoles(document: string) {
     const roles = await this.prisma.role.findMany({

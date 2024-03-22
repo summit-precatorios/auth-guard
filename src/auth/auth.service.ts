@@ -6,6 +6,7 @@ import { compare, genSalt, hash } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command';
 import { AuthRegisterCommand } from './commands/auth-register.command';
+import { JwtContansts } from './constants';
 
 interface jwtDataPayload {
   payload: {
@@ -56,8 +57,9 @@ export class AuthService {
   }
 
   async verify(token: string) {
-    const data: jwtDataPayload = this.jwtService.verify(token);
-    console.log(data);
+    const data: jwtDataPayload = this.jwtService.verify(token, {
+      secret: JwtContansts.secret,
+    });
 
     return data;
   }

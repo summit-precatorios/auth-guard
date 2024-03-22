@@ -1,7 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthRegisterCommand } from './commands/auth-register.command';
-// import { stringify } from 'querystring';
 import { AuthSignInCommand } from './commands/auth-sign-in.command';
 
 @Controller('auth')
