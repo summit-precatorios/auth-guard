@@ -78,6 +78,7 @@ export class AuthService {
       }),
     };
   }
+
   private async encrypt(password: string) {
     const SALT = await genSalt();
     const encryptedPassword = await hash(password, SALT);
