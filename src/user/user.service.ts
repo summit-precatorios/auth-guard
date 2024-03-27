@@ -52,13 +52,14 @@ export class UserService {
         email: true,
         firstName: true,
         lastName: true,
+        verifiedEmail: true,
+
         roles: {
           select: {
             name: true,
             description: true,
           },
         },
-        verifiedEmail: true,
       },
     });
 
