@@ -10,8 +10,7 @@ export class UserService {
       data: {
         document: command.document,
         email: command.email,
-        firstName: command.firstName,
-        lastName: command.lastName,
+        fullName: command.fullName,
         password: command.password,
       },
     });
@@ -25,8 +24,7 @@ export class UserService {
         data: {
           document: command.document,
           email: command.email,
-          firstName: command.firstName,
-          lastName: command.lastName,
+          fullName: command.fullName,
           password: command.password,
         },
       });
@@ -50,8 +48,7 @@ export class UserService {
         deletedAt: true,
         document: true,
         email: true,
-        firstName: true,
-        lastName: true,
+        fullName: true,
         verifiedEmail: true,
 
         roles: {

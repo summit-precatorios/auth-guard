@@ -30,6 +30,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
   async register(command: AuthRegisterCommand) {
+    console.log(command);
+
     const enchitmentCommand: AuthRegisterCommand = {
       ...command,
       password: await this.encrypt(command.password),
@@ -56,8 +58,7 @@ export class AuthService {
       const payload: AuthJwtSignCommand = {
         document: user.document,
         email: user.email,
-        fistName: user.firstName,
-        lastName: user.lastName,
+        fullName: user.fullName,
         avatarUrl: user.avatarUrl,
       };
 

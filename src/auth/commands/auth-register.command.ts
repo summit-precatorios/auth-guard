@@ -23,8 +23,5 @@ export class AuthRegisterCommand {
   password: string;
 
   @IsString()
-  firstName: string;
-
-  @IsString()
-  lastName: string;
+  fullName: string;
 }
