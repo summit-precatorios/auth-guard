@@ -1,7 +1,7 @@
 export class AuthJwtSignCommand {
-  fullName: string;
+  name: string;
   email: string;
   document: string;
-  avatarUrl?: string | null;
+  image?: string | null;
   roles?: Array<string>;
 }

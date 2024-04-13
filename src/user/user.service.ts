@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { CreateUserCommandRequest } from './requests/create-user-command.request';
 
@@ -10,7 +15,7 @@ export class UserService {
       data: {
         document: command.document,
         email: command.email,
-        fullName: command.fullName,
+        name: command.fullName,
         password: command.password,
       },
     });
@@ -19,39 +24,63 @@ export class UserService {
   }
 
   async createUserAndProviderDefaultRole(command: CreateUserCommandRequest) {
-    return await this.prisma.$transaction(async (context) => {
-      const user = await context.user.create({
-        data: {
-          document: command.document,
-          email: command.email,
-          fullName: command.fullName,
-          password: command.password,
-        },
+    const user = await this.prisma.user.findUnique({
+      where: {
+        document: command.document,
+      },
+    });
+
+    if (!user) {
+      await this.prisma.$transaction(async (context) => {
+        const user = await context.user.create({
+          data: {
+            document: command.document,
+            email: command.email,
+            name: command.fullName,
+            password: command.password,
+          },
+        });
+
+        await context.role.create({
+          data: {
+            name: 'common-user',
+            description: 'Perfil de usuário comum',
+            userId: user.id,
+          },
+          select: {
+            name: true,
+            user: {
+              select: {
+                name: true,
+                email: true,
+              },
+            },
+          },
+        });
       });
 
-      await context.role.create({
-        data: {
-          name: 'common-user',
-          description: 'Perfil de usuário comum',
-          userId: user.id,
-        },
-      });
-    });
+      return {
+        message: 'resource created',
+        error: null,
+        statusCode: HttpStatus.CREATED,
+      };
+    }
+
+    throw new ConflictException('Usuário já registrado');
   }
 
   async findAll() {
     const users = await this.prisma.user.findMany({
       select: {
-        avatarUrl: true,
-        contact: true,
+        image: true,
         createdAt: true,
         deletedAt: true,
         document: true,
         email: true,
-        fullName: true,
-        verifiedEmail: true,
+        name: true,
+        emailVerified: true,
 
-        roles: {
+        Role: {
           select: {
             name: true,
             description: true,
@@ -69,7 +98,7 @@ export class UserService {
         document: document,
       },
       include: {
-        roles: {
+        Role: {
           select: {
             name: true,
           },

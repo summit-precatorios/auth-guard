@@ -3,5 +3,4 @@ export class CreateUserCommandRequest {
   fullName: string;
   email: string;
   password: string;
-  roles?: Array<string> | undefined;
 }

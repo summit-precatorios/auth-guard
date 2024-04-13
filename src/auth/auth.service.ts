@@ -1,15 +1,11 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
-import { UserService } from 'src/user/user.service';
-import { AuthSignInCommand } from './commands/auth-sign-in.command';
-import { compare, genSalt, hash } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { compare, genSalt, hash } from 'bcrypt';
+import { UserService } from 'src/user/user.service';
 import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command';
 import { AuthRegisterCommand } from './commands/auth-register.command';
+import { AuthSignInCommand } from './commands/auth-sign-in.command';
 import { JwtContansts } from './constants';
 
 interface jwtDataPayload {
@@ -18,7 +14,7 @@ interface jwtDataPayload {
     email: string;
     fistName: string;
     lastName: string;
-    avatarUrl: string | null;
+    image: string | null;
   };
   roles: Array<string>;
 }
@@ -30,36 +26,31 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
   async register(command: AuthRegisterCommand) {
-    console.log(command);
-
-    const enchitmentCommand: AuthRegisterCommand = {
+    const enrichmentCommand: AuthRegisterCommand = {
       ...command,
       password: await this.encrypt(command.password),
     };
 
-    try {
-      const response =
-        await this.userService.createUserAndProviderDefaultRole(
-          enchitmentCommand,
-        );
+    const response =
+      await this.userService.createUserAndProviderDefaultRole(
+        enrichmentCommand,
+      );
 
-      return response;
-    } catch (e) {
-      throw new BadRequestException();
-    }
+    return response;
   }
 
-  async signIn(command: AuthSignInCommand): Promise<{ access_token: string }> {
+  async signIn(command: AuthSignInCommand): Promise<{ accessToken: string }> {
     try {
       const user = await this.userService.findOne(command.document);
-      if (!(await compare(command.password, user?.password)))
+
+      if (!(await compare(command.password, user.password)))
         throw new UnauthorizedException('Login e/ou senha incorretos');
 
       const payload: AuthJwtSignCommand = {
         document: user.document,
         email: user.email,
-        fullName: user.fullName,
-        avatarUrl: user.avatarUrl,
+        name: user.name,
+        image: user.image,
       };
 
       return this.providerAccessToken(payload);
@@ -78,11 +69,11 @@ export class AuthService {
 
   private async providerAccessToken(
     payload: AuthJwtSignCommand,
-  ): Promise<{ access_token: string }> {
+  ): Promise<{ accessToken: string }> {
     const roles = await this.userService.findRoles(payload.document);
 
     return {
-      access_token: await this.jwtService.signAsync({
+      accessToken: await this.jwtService.signAsync({
         payload,
         roles: roles.map((role) => {
           return role.name;
