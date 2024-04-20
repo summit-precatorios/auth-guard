@@ -1,7 +1,9 @@
-// api-key.middleware.ts
-
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import {
+  BadRequestException,
+  Injectable,
+  NestMiddleware,
+} from '@nestjs/common';
+import { NextFunction, Request, Response } from 'express';
 
 @Injectable()
 export class ApiKeyMiddleware implements NestMiddleware {
@@ -9,17 +11,15 @@ export class ApiKeyMiddleware implements NestMiddleware {
     const apiKey = req.headers['x-api-key'];
 
     if (!apiKey || !this.isValidApiKey(apiKey)) {
-      return res.status(401).json({ message: 'API key inválida' });
+      throw new BadRequestException('API key inválida');
     }
 
     next();
   }
 
-  private isValidApiKey(apiKey: string | string[]): boolean {
-    // Implemente a lógica para verificar se a apiKey é válida, por exemplo, consultando um banco de dados
-    console.log(apiKey);
-    console.log(process.env.API_KEY);
+  private async isValidApiKey(apiKey: string | string[]): Promise<boolean> {
+    if (apiKey === process.env.API_KEY) return true;
 
-    return apiKey === process.env.API_KEY;
+    return false;
   }
 }
