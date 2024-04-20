@@ -3,6 +3,7 @@ services:
   summit-dev-postgres:
     container_name: summit-dev-postgres
     image: postgres
+    restart: always
 
     ports:
       - 5432:5432
@@ -12,3 +13,9 @@ services:
       - POSTGRES_DB=summit_dev
       - POSTGRES_PASSWORD=M41d3nsix00
       - TZ=America/Sao_Paulo
+
+    volumes: 
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
