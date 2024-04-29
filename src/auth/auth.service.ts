@@ -81,7 +81,7 @@ export class AuthService {
               user,
             },
             {
-              expiresIn: '90s',
+              expiresIn: '180s',
               secret: JwtContansts.secret,
             },
           ),
