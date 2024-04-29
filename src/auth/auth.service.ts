@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcrypt';
@@ -7,6 +11,10 @@ import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command';
 import { AuthRegisterCommand } from './commands/auth-register.command';
 import { AuthSignInCommand } from './commands/auth-sign-in.command';
 import { JwtContansts } from './constants';
+
+import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
+import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
 
 interface jwtDataPayload {
   payload: {
@@ -24,6 +32,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService,
   ) {}
   async register(command: AuthRegisterCommand) {
     const enrichmentCommand: AuthRegisterCommand = {
@@ -43,6 +52,8 @@ export class AuthService {
     try {
       const user = await this.userService.findOne(command.document);
 
+      console.log(user);
+
       if (!(await compare(command.password, user.password)))
         throw new UnauthorizedException('Login e/ou senha incorretos');
 
@@ -57,6 +68,50 @@ export class AuthService {
     } catch (e) {
       throw new UnauthorizedException('Login e/ou senha incorretos');
     }
+  }
+
+  async recoveryPasswordRequest(command: AuthRecoveryPasswordRequest) {
+    const user = await this.userService.findOneByEmail(command.email);
+
+    if (user) {
+      const verification = await this.prisma.verificationToken.create({
+        data: {
+          token: await this.jwtService.signAsync(
+            {
+              user,
+            },
+            {
+              expiresIn: '90s',
+              secret: JwtContansts.secret,
+            },
+          ),
+          expires: new Date(),
+          identifier: user.document,
+        },
+      });
+
+      return verification.token;
+    }
+  }
+
+  async resetPassword(request: AuthResetPasswordRequest) {
+    const isValidToken = await this.verify(request.token);
+
+    if (!isValidToken) throw new BadRequestException();
+
+    const payload = this.jwtService.decode(request.token);
+
+    console.log(payload);
+
+    const enrichmentRequest = {
+      password: await this.encrypt(request.password),
+    };
+
+    await this.userService.updatePasswordByDocument(
+      payload.user.document,
+      enrichmentRequest.password,
+      request.token,
+    );
   }
 
   async verify(token: string) {

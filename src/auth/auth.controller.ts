@@ -1,8 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Patch, Post } from '@nestjs/common';
+import { Public } from 'src/decorators/public.decorator';
 import { AuthService } from './auth.service';
 import { AuthRegisterCommand } from './commands/auth-register.command';
 import { AuthSignInCommand } from './commands/auth-sign-in.command';
-import { Public } from 'src/decorators/public.decorator';
+import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
+import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
 
 @Controller('auth')
 export class AuthController {
@@ -18,5 +20,16 @@ export class AuthController {
   @Post('register')
   async register(@Body() command: AuthRegisterCommand) {
     return this.authService.register(command);
+  }
+
+  @Public()
+  @Post('recovery/request')
+  async recoveryPasswordRequest(@Body() request: AuthRecoveryPasswordRequest) {
+    return this.authService.recoveryPasswordRequest(request);
+  }
+  @Public()
+  @Patch('reset-password')
+  async resetPassword(@Body() request: AuthResetPasswordRequest) {
+    return this.authService.resetPassword(request);
   }
 }
