@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcrypt';
 import { UserService } from 'src/user/user.service';
 import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command';
@@ -90,14 +90,15 @@ export class AuthService {
         },
       });
 
-      return verification.token;
-    }
+      return { token: verification.token };
+    } else return;
   }
 
   async resetPassword(request: AuthResetPasswordRequest) {
     const isValidToken = await this.verify(request.token);
 
-    if (!isValidToken) throw new BadRequestException();
+    if (!isValidToken)
+      throw new BadRequestException('Token de redifinição de senha inválido');
 
     const payload = this.jwtService.decode(request.token);
 
@@ -115,11 +116,17 @@ export class AuthService {
   }
 
   async verify(token: string) {
-    const data: jwtDataPayload = this.jwtService.verify(token, {
-      secret: JwtContansts.secret,
-    });
+    try {
+      const payload: jwtDataPayload = await this.jwtService.verify(token, {
+        secret: JwtContansts.secret,
+      });
 
-    return data;
+      return payload;
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        throw new BadRequestException('Token de redifinição de senha expirado');
+      }
+    }
   }
 
   private async providerAccessToken(
