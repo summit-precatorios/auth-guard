@@ -10,9 +10,37 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guard/auth.guard';
 import { ApiKeyMiddleware } from './middlewares/api-key.middleware';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 
 @Module({
-  imports: [PrismaModule, UserModule, AuthModule],
+  imports: [
+    PrismaModule,
+    UserModule,
+    AuthModule,
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.mailersend.net',
+        port: 587,
+        auth: {
+          user: 'MS_gA2oHA@summitprecatorios.com.br',
+          pass: 'zHlW6acVAlU22FqL',
+        },
+      },
+
+      defaults: {
+        from: '"Summit Precatórios" <info@summitprecatorios.com.br>',
+      },
+      preview: true,
+      template: {
+        dir: __dirname + '/templates',
+        adapter: new PugAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
+  ],
   controllers: [AppController, AuthController],
   providers: [
     AppService,

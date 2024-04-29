@@ -12,6 +12,7 @@ import { AuthRegisterCommand } from './commands/auth-register.command';
 import { AuthSignInCommand } from './commands/auth-sign-in.command';
 import { JwtContansts } from './constants';
 
+import { MailerService } from '@nestjs-modules/mailer';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
 import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
@@ -33,6 +34,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
+    private readonly emailService: MailerService,
   ) {}
   async register(command: AuthRegisterCommand) {
     const enrichmentCommand: AuthRegisterCommand = {
@@ -72,6 +74,7 @@ export class AuthService {
     const user = await this.userService.findOneByEmail(command.email);
 
     if (user) {
+      console.log(user);
       const verification = await this.prisma.verificationToken.create({
         data: {
           token: await this.jwtService.signAsync(
@@ -88,8 +91,18 @@ export class AuthService {
         },
       });
 
-      return { token: verification.token };
-    } else return;
+      await this.emailService.sendMail({
+        subject: 'Redefinição da senha da Plataforma Summit Precatórios',
+        to: user.email,
+        template: 'recovery-password',
+        context: {
+          link: verification.token,
+        },
+      });
+
+      return true;
+    }
+    throw new BadRequestException();
   }
 
   async resetPassword(request: AuthResetPasswordRequest) {
