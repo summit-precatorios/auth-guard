@@ -10,18 +10,6 @@ import { CreateUserCommandRequest } from './requests/create-user-command.request
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaClient) {}
-  async create(command: CreateUserCommandRequest) {
-    const response = await this.prisma.user.create({
-      data: {
-        document: command.document,
-        email: command.email,
-        name: command.fullName,
-        password: command.password,
-      },
-    });
-
-    return response;
-  }
 
   async createUserAndProviderDefaultRole(command: CreateUserCommandRequest) {
     const user = await this.prisma.user.findUnique({
@@ -80,7 +68,7 @@ export class UserService {
         name: true,
         emailVerified: true,
 
-        Role: {
+        roles: {
           select: {
             name: true,
             description: true,
@@ -98,11 +86,27 @@ export class UserService {
         document: document,
       },
       include: {
-        Role: {
+        roles: {
           select: {
             name: true,
           },
         },
+      },
+    });
+
+    if (!user) throw new NotFoundException();
+
+    return user;
+  }
+
+  async findOneByEmail(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+      select: {
+        email: true,
+        document: true,
       },
     });
 
@@ -121,6 +125,35 @@ export class UserService {
     });
 
     return roles;
+  }
+
+  async updatePasswordByDocument(
+    document: string,
+    password: string,
+    token: string,
+  ) {
+    await this.prisma.$transaction(async (context) => {
+      await context.user.update({
+        data: {
+          password: password,
+        },
+        where: {
+          document: document,
+        },
+      });
+
+      await context.verificationToken.delete({
+        where: {
+          token,
+        },
+      });
+    });
+
+    return {
+      message: 'resource updated',
+      error: null,
+      statusCode: HttpStatus.OK,
+    };
   }
 
   remove(id: number) {
