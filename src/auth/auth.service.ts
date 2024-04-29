@@ -52,8 +52,6 @@ export class AuthService {
     try {
       const user = await this.userService.findOne(command.document);
 
-      console.log(user);
-
       if (!(await compare(command.password, user.password)))
         throw new UnauthorizedException('Login e/ou senha incorretos');
 
@@ -101,8 +99,6 @@ export class AuthService {
       throw new BadRequestException('Token de redifinição de senha inválido');
 
     const payload = this.jwtService.decode(request.token);
-
-    console.log(payload);
 
     const enrichmentRequest = {
       password: await this.encrypt(request.password),
