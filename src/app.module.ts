@@ -11,7 +11,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guard/auth.guard';
 import { ApiKeyMiddleware } from './middlewares/api-key.middleware';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 
 @Module({
   imports: [
@@ -20,11 +20,18 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
     AuthModule,
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.mailersend.net',
+        //! staging configs
+        // host: 'smtp.mailersend.net',
+        // port: 587,
+        // auth: {
+        //   user: 'MS_gA2oHA@summitprecatorios.com.br',
+        //   pass: 'zHlW6acVAlU22FqL',
+        // },
+        host: 'smtp.ethereal.email',
         port: 587,
         auth: {
-          user: 'MS_gA2oHA@summitprecatorios.com.br',
-          pass: 'zHlW6acVAlU22FqL',
+          user: 'angelina.dietrich44@ethereal.email',
+          pass: 'prc3Rah8R83dTMGJGD',
         },
       },
 
@@ -34,9 +41,9 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
       preview: true,
       template: {
         dir: __dirname + '/templates',
-        adapter: new PugAdapter(),
+        adapter: new EjsAdapter(),
         options: {
-          strict: true,
+          strict: false,
         },
       },
     }),

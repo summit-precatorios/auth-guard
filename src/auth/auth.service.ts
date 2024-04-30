@@ -74,7 +74,6 @@ export class AuthService {
     const user = await this.userService.findOneByEmail(command.email);
 
     if (user) {
-      console.log(user);
       const verification = await this.prisma.verificationToken.create({
         data: {
           token: await this.jwtService.signAsync(
