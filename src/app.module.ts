@@ -21,17 +21,11 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
     MailerModule.forRoot({
       transport: {
         //! staging configs
-        // host: 'smtp.mailersend.net',
-        // port: 587,
-        // auth: {
-        //   user: 'MS_gA2oHA@summitprecatorios.com.br',
-        //   pass: 'zHlW6acVAlU22FqL',
-        // },
-        host: 'smtp.ethereal.email',
+        host: 'smtp.mailersend.net',
         port: 587,
         auth: {
-          user: 'angelina.dietrich44@ethereal.email',
-          pass: 'prc3Rah8R83dTMGJGD',
+          user: 'MS_gA2oHA@summitprecatorios.com.br',
+          pass: 'zHlW6acVAlU22FqL',
         },
       },
 
