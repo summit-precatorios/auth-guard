@@ -12,6 +12,7 @@ import { AuthGuard } from './guard/auth.guard';
 import { ApiKeyMiddleware } from './middlewares/api-key.middleware';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import { OperationResultService } from './operation-result/operation-result.service';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    OperationResultService,
   ],
 })
 export class AppModule implements NestModule {
