@@ -15,7 +15,9 @@ import { PrismaClient } from '@prisma/client';
       global: true,
       secret: JwtContansts.secret,
       signOptions: {
-        expiresIn: '1h',
+        expiresIn: JwtContansts.expiration,
+        audience: JwtContansts.audience,
+        issuer: JwtContansts.issuer,
       },
     }),
   ],
