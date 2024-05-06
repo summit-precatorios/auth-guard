@@ -12,7 +12,7 @@ import { AuthRegisterCommand } from './commands/auth-register.command';
 import { AuthSignInCommand } from './commands/auth-sign-in.command';
 import { JwtContansts } from './constants';
 
-import { MailerService } from '@nestjs-modules/mailer';
+import { NotificationService } from 'src/notification/notification.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
 import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
@@ -34,7 +34,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
-    private readonly emailService: MailerService,
+    private notificationService: NotificationService,
   ) {}
   async register(command: AuthRegisterCommand) {
     const enrichmentCommand: AuthRegisterCommand = {
@@ -46,6 +46,8 @@ export class AuthService {
       await this.userService.createUserAndProviderDefaultRole(
         enrichmentCommand,
       );
+
+    // TODO creation account notification
 
     return response;
   }
@@ -90,14 +92,10 @@ export class AuthService {
         },
       });
 
-      await this.emailService.sendMail({
-        subject: 'Redefinição da senha da Plataforma Summit Precatórios',
-        to: user.email,
-        template: 'recovery-password',
-        context: {
-          link: verification.token,
-        },
-      });
+      await this.notificationService.recoveryPasswordNotification(
+        user.email,
+        verification.token,
+      );
 
       return true;
     }

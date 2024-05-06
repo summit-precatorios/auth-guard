@@ -1,18 +1,19 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { PrismaService } from './prisma/prisma.service';
-import { PrismaModule } from './prisma/prisma.module';
-import { UserModule } from './user/user.module';
-import { AuthService } from './auth/auth.service';
-import { AuthController } from './auth/auth.controller';
-import { AuthModule } from './auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './guard/auth.guard';
-import { ApiKeyMiddleware } from './middlewares/api-key.middleware';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthController } from './auth/auth.controller';
+import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
+import { AuthGuard } from './guard/auth.guard';
+import { ApiKeyMiddleware } from './middlewares/api-key.middleware';
 import { OperationResultService } from './operation-result/operation-result.service';
+import { PrismaModule } from './prisma/prisma.module';
+import { PrismaService } from './prisma/prisma.service';
+import { UserModule } from './user/user.module';
+import { NotificationService } from './notification/notification.service';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { OperationResultService } from './operation-result/operation-result.serv
       useClass: AuthGuard,
     },
     OperationResultService,
+    NotificationService,
   ],
 })
 export class AppModule implements NestModule {
