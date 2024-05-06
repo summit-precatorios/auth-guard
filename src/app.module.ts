@@ -22,11 +22,11 @@ import { OperationResultService } from './operation-result/operation-result.serv
     MailerModule.forRoot({
       transport: {
         //! staging configs
-        host: 'smtp.mailersend.net',
-        port: 587,
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT!),
         auth: {
-          user: 'MS_gA2oHA@summitprecatorios.com.br',
-          pass: 'zHlW6acVAlU22FqL',
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASSWORD,
         },
       },
 
