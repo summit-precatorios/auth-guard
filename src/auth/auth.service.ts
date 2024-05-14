@@ -11,7 +11,6 @@ import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command';
 import { AuthRegisterCommand } from './commands/auth-register.command';
 import { AuthSignInCommand } from './commands/auth-sign-in.command';
 import { JwtContansts } from './constants';
-
 import { NotificationService } from 'src/notification/notification.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
@@ -34,7 +33,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
-    private notificationService: NotificationService,
+    private readonly notificationService: NotificationService,
   ) {}
   async register(command: AuthRegisterCommand) {
     const enrichmentCommand: AuthRegisterCommand = {
