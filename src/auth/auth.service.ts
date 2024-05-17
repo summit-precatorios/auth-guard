@@ -32,7 +32,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly prisma: PrismaService,
+    private readonly prismaService: PrismaService,
     private readonly notificationService: NotificationService,
   ) {}
   async register(command: AuthRegisterCommand) {
@@ -46,7 +46,10 @@ export class AuthService {
         enrichmentCommand,
       );
 
-    // TODO creation account notification
+    if (response.statusCode === 201)
+      await this.notificationService.sendCreatedAccountNotification(
+        command.email,
+      );
 
     return response;
   }
@@ -71,18 +74,20 @@ export class AuthService {
     }
   }
 
-  async recoveryPasswordRequest(command: AuthRecoveryPasswordRequest) {
+  async recoveryPasswordRequest(
+    command: AuthRecoveryPasswordRequest,
+  ): Promise<void> {
     const user = await this.userService.findOneByEmail(command.email);
 
     if (user) {
-      const verification = await this.prisma.verificationToken.create({
+      const verification = await this.prismaService.verificationToken.create({
         data: {
           token: await this.jwtService.signAsync(
             {
               user,
             },
             {
-              expiresIn: '180s',
+              expiresIn: '2h',
               secret: JwtContansts.secret,
             },
           ),
@@ -91,7 +96,7 @@ export class AuthService {
         },
       });
 
-      await this.notificationService.recoveryPasswordNotification(
+      await this.notificationService.sendRecoveryPasswordNotification(
         user.email,
         verification.token,
       );

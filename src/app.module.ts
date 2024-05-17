@@ -6,7 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './auth/AuthService';
 import { AuthGuard } from './guard/auth.guard';
 import { ApiKeyMiddleware } from './middlewares/api-key.middleware';
 import { OperationResultService } from './operation-result/operation-result.service';
