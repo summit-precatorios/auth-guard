@@ -16,6 +16,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
 import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
 import { AuthRecoveryPasswordResponse } from './responses/auth-recovery-password.response';
+import { CreateUserCommandResponse } from 'src/user/responses/create-user-command.response';
+import { Code } from 'src/operation-result/code.enum';
 
 interface jwtDataPayload {
   payload: {
@@ -42,16 +44,20 @@ export class AuthService {
       password: await this.encrypt(command.password),
     };
 
-    const response =
-      await this.userService.createUserAndProviderDefaultRole(
-        enrichmentCommand,
-      );
+    const createUser = await this.userService.create(enrichmentCommand);
 
-    if (response.statusCode === 201)
+    if (createUser.success)
       await this.notificationService.sendCreatedAccountNotification(
         command.email,
         command.fullName,
       );
+
+    const response: CreateUserCommandResponse = {
+      message: 'account creation notification sent',
+      statusCode: Code.Created,
+      success: true,
+      data: createUser,
+    };
 
     return response;
   }
@@ -104,6 +110,7 @@ export class AuthService {
 
         const response: AuthRecoveryPasswordResponse = {
           message: 'password recovery notification sent',
+          statusCode: Code.Created,
           success: true,
           data: null,
         };

@@ -17,7 +17,7 @@ export class UserService {
     private readonly resultService: OperationResultService<CreateUserCommandResponse>,
   ) {}
 
-  async createUserAndProviderDefaultRole(command: CreateUserCommandRequest) {
+  async create(command: CreateUserCommandRequest) {
     const user = await this.prisma.user.findUnique({
       where: {
         document: command.document,
@@ -25,33 +25,36 @@ export class UserService {
     });
 
     if (!user) {
-      await this.prisma.$transaction(async (context) => {
-        const user = await context.user.create({
-          data: {
-            document: command.document,
-            email: command.email,
-            name: command.fullName,
-            password: command.password,
-          },
-        });
-
-        await context.role.create({
-          data: {
-            name: 'common-user',
-            description: 'Perfil de usuário comum',
-            userId: user.id,
-          },
-          select: {
-            name: true,
-            user: {
-              select: {
-                name: true,
-                email: true,
-              },
-            },
-          },
-        });
+      const user = await this.prisma.user.create({
+        data: {
+          document: command.document,
+          email: command.email,
+          name: command.fullName,
+          password: command.password,
+        },
+        select: {
+          name: true,
+          email: true,
+        },
       });
+
+      // await context.role.create({
+      //   data: {
+      //     name: 'common-user',
+      //     description: 'Perfil de usuário comum',
+      //     userId: user.id,
+      //   },
+      //   select: {
+      //     name: true,
+      //     user: {
+      //       select: {
+      //         name: true,
+      //         email: true,
+      //       },
+      //     },
+      //   },
+      // });
+      // });
 
       const response: CreateUserCommandResponse = {
         message: 'resource created!',
