@@ -1,4 +1,9 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { Code } from 'src/operation-result/code.enum';
 import { OperationResultService } from 'src/operation-result/operation-result.service';
@@ -49,6 +54,7 @@ export class UserService {
       });
 
       const response: CreateUserCommandResponse = {
+        message: 'resource created!',
         statusCode: Code.Created,
         success: true,
         data: user,
@@ -57,11 +63,7 @@ export class UserService {
       return response;
     }
 
-    this.resultService.addError(Code.Conflict, 'Usuário já registrado');
-
-    return this.resultService.Get();
-
-    // throw new ConflictException('Usuário já registrado');
+    throw new ConflictException('Usuário já registrado');
   }
 
   async findAll() {

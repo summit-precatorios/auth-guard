@@ -50,6 +50,7 @@ export class AuthService {
     if (response.statusCode === 201)
       await this.notificationService.sendCreatedAccountNotification(
         command.email,
+        command.fullName,
       );
 
     return response;
@@ -79,34 +80,38 @@ export class AuthService {
     const user = await this.userService.findOneByEmail(command.email);
 
     if (user) {
-      const verification = await this.prismaService.verificationToken.create({
-        data: {
-          token: await this.jwtService.signAsync(
-            {
-              user,
-            },
-            {
-              expiresIn: '2h',
-              secret: JwtContansts.secret,
-            },
-          ),
-          expires: new Date(),
-          identifier: user.document,
-        },
-      });
+      try {
+        const verification = await this.prismaService.verificationToken.create({
+          data: {
+            token: await this.jwtService.signAsync(
+              {
+                user,
+              },
+              {
+                expiresIn: '2h',
+                secret: JwtContansts.secret,
+              },
+            ),
+            expires: new Date(),
+            identifier: user.document,
+          },
+        });
 
-      await this.notificationService.sendRecoveryPasswordNotification(
-        user.email,
-        verification.token,
-      );
+        await this.notificationService.sendRecoveryPasswordNotification(
+          user.email,
+          verification.token,
+        );
 
-      const response: AuthRecoveryPasswordResponse = {
-        message: 'recovery password notification sended',
-        success: true,
-        data: null,
-      };
+        const response: AuthRecoveryPasswordResponse = {
+          message: 'password recovery notification sent',
+          success: true,
+          data: null,
+        };
 
-      return response;
+        return response;
+      } catch (error) {
+        throw new BadRequestException(error);
+      }
     }
     throw new BadRequestException();
   }
