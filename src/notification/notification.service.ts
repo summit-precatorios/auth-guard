@@ -6,7 +6,11 @@ import { NotificationStrategyService } from 'src/strategy/notification/notificat
 export class NotificationService extends NotificationStrategyService {
   async sendRecoveryPasswordNotification(email: string, token: string) {
     const schema: INotificationSchema = {
-      context: { token },
+      context: {
+        token,
+        appName: 'Summit Precatórios',
+        senderName: 'Equipe Summit',
+      },
       subject: 'Redefinição da senha da Plataforma Summit Precatórios',
       user: { email },
       template: 'recovery-password',
@@ -15,12 +19,17 @@ export class NotificationService extends NotificationStrategyService {
     await this.sendNotification(schema);
   }
 
-  async sendCreatedAccountNotification(email: string) {
+  async sendCreatedAccountNotification(email: string, userName: string) {
     const schema: INotificationSchema = {
-      subject:
-        'Confirmação de Criação de Conta: Bem-Vindo à Summit Precatórios!',
+      subject: 'Bem-Vindo à Summit Precatórios! Estamos felizes em ter você!',
       template: 'account-created',
       user: { email },
+      context: {
+        appName: 'Summit Precatórios',
+        userName,
+        supportEmail: 'summitprecatorios@gmail.com',
+        senderName: 'Equipe Summit',
+      },
     };
 
     await this.sendNotification(schema);

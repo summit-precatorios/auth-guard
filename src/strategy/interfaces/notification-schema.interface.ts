@@ -1,8 +1,9 @@
 export interface INotificationSchema {
   user: {
     email: string;
+    name?: string;
   };
-  context: any;
+  context?: any | null;
   subject: string;
   template: string;
 }

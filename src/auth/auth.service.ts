@@ -15,6 +15,7 @@ import { NotificationService } from 'src/notification/notification.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
 import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
+import { AuthRecoveryPasswordResponse } from './responses/auth-recovery-password.response';
 
 interface jwtDataPayload {
   payload: {
@@ -74,9 +75,7 @@ export class AuthService {
     }
   }
 
-  async recoveryPasswordRequest(
-    command: AuthRecoveryPasswordRequest,
-  ): Promise<void> {
+  async recoveryPasswordRequest(command: AuthRecoveryPasswordRequest) {
     const user = await this.userService.findOneByEmail(command.email);
 
     if (user) {
@@ -101,7 +100,13 @@ export class AuthService {
         verification.token,
       );
 
-      return true;
+      const response: AuthRecoveryPasswordResponse = {
+        message: 'recovery password notification sended',
+        success: true,
+        data: null,
+      };
+
+      return response;
     }
     throw new BadRequestException();
   }

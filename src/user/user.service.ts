@@ -1,15 +1,16 @@
-import {
-  ConflictException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { Code } from 'src/operation-result/code.enum';
+import { OperationResultService } from 'src/operation-result/operation-result.service';
 import { CreateUserCommandRequest } from './requests/create-user-command.request';
+import { CreateUserCommandResponse } from './responses/create-user-command.response';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(
+    private readonly prisma: PrismaClient,
+    private readonly resultService: OperationResultService<CreateUserCommandResponse>,
+  ) {}
 
   async createUserAndProviderDefaultRole(command: CreateUserCommandRequest) {
     const user = await this.prisma.user.findUnique({
@@ -47,14 +48,20 @@ export class UserService {
         });
       });
 
-      return {
-        message: 'resource created',
-        error: null,
-        statusCode: HttpStatus.CREATED,
+      const response: CreateUserCommandResponse = {
+        statusCode: Code.Created,
+        success: true,
+        data: user,
       };
+
+      return response;
     }
 
-    throw new ConflictException('Usuário já registrado');
+    this.resultService.addError(Code.Conflict, 'Usuário já registrado');
+
+    return this.resultService.Get();
+
+    // throw new ConflictException('Usuário já registrado');
   }
 
   async findAll() {
@@ -110,7 +117,7 @@ export class UserService {
       },
     });
 
-    if (!user) throw new NotFoundException();
+    if (!user) return null;
 
     return user;
   }

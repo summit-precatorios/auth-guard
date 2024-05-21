@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 export enum Code {
   Ok = HttpStatus.OK,
+  Created = HttpStatus.CREATED,
   GenericError = HttpStatus.INTERNAL_SERVER_ERROR,
   BusinessError = HttpStatus.UNPROCESSABLE_ENTITY,
   BadRequest = HttpStatus.BAD_REQUEST,

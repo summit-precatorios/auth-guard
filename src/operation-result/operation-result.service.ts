@@ -27,15 +27,15 @@ export class OperationResultService<T> {
   }
 
   Get(): OperationResultService<T> {
-    if (!this.isBodyNull) {
+    if (!this.isErrorBodyIsNull) {
       this.body.success = true;
-      this.statusCode = Code.Ok;
+      this.statusCode;
     }
 
     return this;
   }
 
-  private isBodyNull(): boolean {
+  private isErrorBodyIsNull(): boolean {
     return this.body.errors == null;
   }
 }

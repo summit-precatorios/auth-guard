@@ -1,10 +1,10 @@
 import { Body, Controller, Patch, Post } from '@nestjs/common';
 import { Public } from 'src/decorators/public.decorator';
-import { AuthService } from './AuthService';
 import { AuthRegisterCommand } from './commands/auth-register.command';
 import { AuthSignInCommand } from './commands/auth-sign-in.command';
 import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
 import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
