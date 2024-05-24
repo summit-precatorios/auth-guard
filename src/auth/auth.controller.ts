@@ -28,7 +28,7 @@ export class AuthController {
     return this.authService.recoveryPasswordRequest(request);
   }
   @Public()
-  @Patch('reset-password')
+  @Patch('reset/password')
   async resetPassword(@Body() request: AuthResetPasswordRequest) {
     return this.authService.resetPassword(request);
   }
