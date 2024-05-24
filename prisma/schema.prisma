@@ -54,9 +54,11 @@ model User {
 model VerificationToken {
   identifier String
   token      String   @unique
-  expires    DateTime @db.Timestamp()
+  createdAt  DateTime @default(now()) @db.Timestamp()
+  issuer     String   @db.VarChar(75) // ACTIVATION_TOKEN | RECOVERY_PASSWORD_TOKEN
 
   @@unique([identifier, token])
+
 }
 
 model Role {
