@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { Role } from 'src/decorators/roles.decorator';
 import { Code } from 'src/operation-result/code.enum';
 import { OperationResultService } from 'src/operation-result/operation-result.service';
 import { CreateUserCommandRequest } from './requests/create-user-command.request';
@@ -37,24 +38,6 @@ export class UserService {
           email: true,
         },
       });
-
-      // await context.role.create({
-      //   data: {
-      //     name: 'common-user',
-      //     description: 'Perfil de usuário comum',
-      //     userId: user.id,
-      //   },
-      //   select: {
-      //     name: true,
-      //     user: {
-      //       select: {
-      //         name: true,
-      //         email: true,
-      //       },
-      //     },
-      //   },
-      // });
-      // });
 
       const response: CreateUserCommandResponse = {
         message: 'resource created!',
@@ -170,12 +153,20 @@ export class UserService {
 
   async activeAccountByDocument(document: string, token: string) {
     await this.prisma.$transaction(async (context) => {
-      await context.user.update({
+      const user = await context.user.update({
         data: {
           isActive: true,
         },
         where: {
           document: document,
+        },
+      });
+
+      await context.role.create({
+        data: {
+          name: Role.User,
+          description: 'Perfil de usuário comum',
+          userId: user.id,
         },
       });
 

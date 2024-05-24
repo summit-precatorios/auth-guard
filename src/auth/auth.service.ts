@@ -8,20 +8,20 @@ import {
 
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcrypt';
+import { Role } from 'src/decorators/roles.decorator';
+import { NotificationService } from 'src/notification/notification.service';
+import { Code } from 'src/operation-result/code.enum';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateUserCommandResponse } from 'src/user/responses/create-user-command.response';
 import { UserService } from 'src/user/user.service';
 import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command';
 import { AuthRegisterCommand } from './commands/auth-register.command';
 import { AuthSignInCommand } from './commands/auth-sign-in.command';
 import { JwtContansts } from './constants';
-import { NotificationService } from 'src/notification/notification.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthActivatorAccountRequest } from './requests/auth-activator-account.request';
 import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
 import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
 import { AuthRecoveryPasswordResponse } from './responses/auth-recovery-password.response';
-import { CreateUserCommandResponse } from 'src/user/responses/create-user-command.response';
-import { Code } from 'src/operation-result/code.enum';
-import { AuthActivatorAccountRequest } from './requests/auth-activator-account.request';
-import { Role } from 'src/decorators/roles.decorator';
 
 interface jwtDataPayload {
   payload: {
@@ -50,11 +50,17 @@ export class AuthService {
 
     const createUser = await this.userService.create(enrichmentCommand);
 
-    if (createUser.success)
+    if (createUser.success) {
+      const activationToken = await this.generateActivationToken(
+        command.document,
+      );
+
       await this.notificationService.sendCreatedAccountNotification(
         command.email,
         command.fullName,
+        activationToken ?? '',
       );
+    }
 
     const response: CreateUserCommandResponse = {
       message: 'account creation notification sent',
@@ -78,6 +84,7 @@ export class AuthService {
         email: user.email,
         name: user.name,
         image: user.image,
+        isActive: user.isActive,
       };
 
       return this.providerAccessToken(payload);
@@ -102,8 +109,9 @@ export class AuthService {
                 secret: JwtContansts.secret,
               },
             ),
-            expires: new Date(),
+            createdAt: new Date(),
             identifier: user.document,
+            issuer: 'RECOVERY_PASSWORD_TOKEN',
           },
         });
 
@@ -171,6 +179,7 @@ export class AuthService {
     );
   }
 
+  // TODO - refatorar e atribuir esta função ao JwtServices
   async verify(token: string) {
     try {
       const payload: jwtDataPayload = await this.jwtService.verify(token, {
@@ -182,9 +191,12 @@ export class AuthService {
       if (error instanceof TokenExpiredError) {
         throw new BadRequestException('Token inválido ou expirado');
       }
+
+      throw new BadRequestException(error);
     }
   }
 
+  // TODO - refatorar e atribuir esta função ao JwtServices
   private async providerAccessToken(
     payload: AuthJwtSignCommand,
   ): Promise<{ accessToken: string }> {
@@ -198,6 +210,33 @@ export class AuthService {
         }),
       }),
     };
+  }
+
+  // TODO - refatorar e atribuir esta função ao JwtServices
+  private async generateActivationToken(document: string) {
+    try {
+      const verificationToken =
+        await this.prismaService.verificationToken.create({
+          data: {
+            token: await this.jwtService.signAsync(
+              {
+                document,
+                role: Role.AccountActivator,
+              },
+              { secret: JwtContansts.secret },
+            ),
+            createdAt: new Date(),
+            identifier: document,
+            issuer: 'ACTIVATION_TOKEN',
+          },
+        });
+
+      console.log(verificationToken.token);
+
+      return verificationToken.token;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   private async encrypt(password: string) {

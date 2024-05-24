@@ -4,4 +4,5 @@ export class AuthJwtSignCommand {
   document: string;
   image?: string | null;
   roles?: Array<string>;
+  isActive: boolean;
 }
