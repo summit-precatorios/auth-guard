@@ -151,7 +151,7 @@ export class AuthService {
       return payload;
     } catch (error) {
       if (error instanceof TokenExpiredError) {
-        throw new BadRequestException('Token de redifinição de senha expirado');
+        throw new BadRequestException('Token inválido ou expirado');
       }
     }
   }
