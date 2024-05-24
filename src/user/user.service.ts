@@ -168,6 +168,31 @@ export class UserService {
     };
   }
 
+  async activeAccountByDocument(document: string, token: string) {
+    await this.prisma.$transaction(async (context) => {
+      await context.user.update({
+        data: {
+          isActive: true,
+        },
+        where: {
+          document: document,
+        },
+      });
+
+      await context.verificationToken.delete({
+        where: {
+          token,
+        },
+      });
+    });
+
+    return {
+      message: 'resource updated',
+      error: null,
+      statusCode: HttpStatus.OK,
+    };
+  }
+
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
