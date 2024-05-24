@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 
@@ -18,6 +20,8 @@ import { AuthResetPasswordRequest } from './requests/auth-reset-password.request
 import { AuthRecoveryPasswordResponse } from './responses/auth-recovery-password.response';
 import { CreateUserCommandResponse } from 'src/user/responses/create-user-command.response';
 import { Code } from 'src/operation-result/code.enum';
+import { AuthActivatorAccountRequest } from './requests/auth-activator-account.request';
+import { Role } from 'src/decorators/roles.decorator';
 
 interface jwtDataPayload {
   payload: {
@@ -120,6 +124,7 @@ export class AuthService {
         throw new BadRequestException(error);
       }
     }
+
     throw new BadRequestException();
   }
 
@@ -138,6 +143,30 @@ export class AuthService {
     await this.userService.updatePasswordByDocument(
       payload.user.document,
       enrichmentRequest.password,
+      request.token,
+    );
+  }
+
+  async activeAccount(request: AuthActivatorAccountRequest) {
+    const isValidToken = await this.verify(request.token);
+
+    if (!isValidToken)
+      throw new BadRequestException('Token de ativação de conta inválido');
+
+    const payload = await this.jwtService.decode(request.token);
+
+    if (payload?.role !== Role.AccountActivator)
+      throw new ForbiddenException(
+        'Acesso negado. Não foi possível realizar a ativação da sua conta',
+      );
+
+    const user = this.userService.findOne(payload.document);
+
+    if (!user)
+      throw new NotFoundException('Conta não encontrada para a ativação');
+
+    await this.userService.activeAccountByDocument(
+      payload.document,
       request.token,
     );
   }
