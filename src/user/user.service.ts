@@ -78,7 +78,7 @@ export class UserService {
         document: true,
         email: true,
         name: true,
-        emailVerified: true,
+        isActive: true,
 
         roles: {
           select: {
