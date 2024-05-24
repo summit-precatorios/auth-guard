@@ -32,4 +32,10 @@ export class AuthController {
   async resetPassword(@Body() request: AuthResetPasswordRequest) {
     return this.authService.resetPassword(request);
   }
+
+  @Public()
+  @Patch('active/account')
+  async activeAccount(@Body() request: AuthActivatorAccountRequest) {
+    return this.authService.activeAccount(request);
+  }
 }
