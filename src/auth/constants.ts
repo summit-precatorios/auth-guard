@@ -4,3 +4,8 @@ export const JwtContansts = {
   audience: 'Summit',
   expiration: 3600,
 };
+
+export enum Token {
+  ActivationAccount = 'ACTIVATION_TOKEN',
+  RecoveryPassword = 'RECOVERY_PASSWORD_TOKEN',
+}

@@ -17,7 +17,7 @@ import { UserService } from 'src/user/user.service';
 import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command';
 import { AuthRegisterCommand } from './commands/auth-register.command';
 import { AuthSignInCommand } from './commands/auth-sign-in.command';
-import { JwtContansts } from './constants';
+import { JwtContansts, Token } from './constants';
 import { AuthActivatorAccountRequest } from './requests/auth-activator-account.request';
 import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
 import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
@@ -111,7 +111,7 @@ export class AuthService {
             ),
             createdAt: new Date(),
             identifier: user.document,
-            issuer: 'RECOVERY_PASSWORD_TOKEN',
+            issuer: Token.RecoveryPassword,
           },
         });
 
@@ -227,7 +227,7 @@ export class AuthService {
             ),
             createdAt: new Date(),
             identifier: document,
-            issuer: 'ACTIVATION_TOKEN',
+            issuer: Token.ActivationAccount,
           },
         });
 
