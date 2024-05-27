@@ -14,8 +14,22 @@ services:
       - POSTGRES_PASSWORD=M41d3nsix00
       - TZ=America/Sao_Paulo
 
-    volumes: 
+    volumes:
       - pgdata:/var/lib/postgresql/data
+
+  # authguard:
+  #   container_name: auth-guard
+  #   image: italorayone/auth-guard:dev
+  #   restart: always
+
+  #   depends_on:
+  #     - summit-dev-postgres
+
+  #   ports:
+  #     - 4004:4004
+
+  #   environment:
+  #     NODE_ENV: production
 
 volumes:
   pgdata:
