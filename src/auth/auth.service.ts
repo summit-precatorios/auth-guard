@@ -148,7 +148,7 @@ export class AuthService {
       password: await this.encrypt(request.password),
     };
 
-    await this.userService.updatePasswordByDocument(
+    return await this.userService.updatePasswordByDocument(
       payload.user.document,
       enrichmentRequest.password,
       request.token,
