@@ -173,7 +173,7 @@ export class AuthService {
     if (!user)
       throw new NotFoundException('Conta não encontrada para a ativação');
 
-    await this.userService.activeAccountByDocument(
+    return await this.userService.activeAccountByDocument(
       payload.document,
       request.token,
     );
@@ -230,8 +230,6 @@ export class AuthService {
             issuer: 'ACTIVATION_TOKEN',
           },
         });
-
-      console.log(verificationToken.token);
 
       return verificationToken.token;
     } catch (error) {
