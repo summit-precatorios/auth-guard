@@ -231,8 +231,6 @@ export class AuthService {
           },
         });
 
-      console.log(verificationToken.token);
-
       return verificationToken.token;
     } catch (error) {
       throw new BadRequestException(error);
