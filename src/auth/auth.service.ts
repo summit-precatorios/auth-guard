@@ -63,10 +63,10 @@ export class AuthService {
     }
 
     const response: CreateUserCommandResponse = {
-      message: 'account creation notification sent',
-      statusCode: Code.Created,
-      success: true,
-      data: createUser,
+      message: createUser.message,
+      statusCode: createUser.statusCode,
+      success: createUser.success,
+      data: createUser.data,
     };
 
     return response;

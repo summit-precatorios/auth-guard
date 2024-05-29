@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   HttpStatus,
   Injectable,
@@ -7,16 +8,12 @@ import {
 import { PrismaClient } from '@prisma/client';
 import { Role } from 'src/decorators/roles.decorator';
 import { Code } from 'src/operation-result/code.enum';
-import { OperationResultService } from 'src/operation-result/operation-result.service';
 import { CreateUserCommandRequest } from './requests/create-user-command.request';
 import { CreateUserCommandResponse } from './responses/create-user-command.response';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly prisma: PrismaClient,
-    private readonly resultService: OperationResultService<CreateUserCommandResponse>,
-  ) {}
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(command: CreateUserCommandRequest) {
     const user = await this.prisma.user.findUnique({
@@ -152,36 +149,40 @@ export class UserService {
   }
 
   async activeAccountByDocument(document: string, token: string) {
-    await this.prisma.$transaction(async (context) => {
-      const user = await context.user.update({
-        data: {
-          isActive: true,
-        },
-        where: {
-          document: document,
-        },
+    try {
+      await this.prisma.$transaction(async (context) => {
+        const user = await context.user.update({
+          data: {
+            isActive: true,
+          },
+          where: {
+            document: document,
+          },
+        });
+
+        await context.role.create({
+          data: {
+            name: Role.User,
+            description: 'Perfil de usuário comum',
+            userId: user.id,
+          },
+        });
+
+        await context.verificationToken.delete({
+          where: {
+            token,
+          },
+        });
       });
 
-      await context.role.create({
-        data: {
-          name: Role.User,
-          description: 'Perfil de usuário comum',
-          userId: user.id,
-        },
-      });
-
-      await context.verificationToken.delete({
-        where: {
-          token,
-        },
-      });
-    });
-
-    return {
-      message: 'resource updated',
-      error: null,
-      statusCode: HttpStatus.OK,
-    };
+      return {
+        message: 'resource updated',
+        error: null,
+        statusCode: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   remove(id: number) {
