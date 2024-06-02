@@ -1,4 +1,5 @@
 import { MailerModule } from '@nestjs-modules/mailer';
+import { ConfigModule } from '@nestjs/config';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
@@ -20,6 +21,9 @@ import { AuthService } from './auth/auth.service';
     PrismaModule,
     UserModule,
     AuthModule,
+    ConfigModule.forRoot({
+      envFilePath: '.env.local',
+    }),
     MailerModule.forRoot({
       transport: {
         //! staging configs
