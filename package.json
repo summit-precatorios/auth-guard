@@ -11,7 +11,7 @@
     "start": "nest start",
     "start:dev": "dotenv -e .env.local -- nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "dotenv -e .env.local -- node dist/main",
     "prisma:migrate/dev": "dotenv -e .env.local -- npx prisma migrate deploy",
     "prisma:reset/dev": "dotenv -e .env.local -- prisma migrate reset --force",
     "prisma:migrate/sta": "dotenv -e .env.staging -- npx prisma migrate deploy",
