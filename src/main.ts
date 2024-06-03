@@ -7,7 +7,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   app.enableCors({
-    origin: '*',
+    origin: ['https://summitprecatorios.com.br/', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'UPDATE', 'PATCH'],
   });
 
