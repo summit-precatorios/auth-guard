@@ -15,6 +15,8 @@ import { PrismaService } from './prisma/prisma.service';
 import { UserModule } from './user/user.module';
 import { NotificationService } from './notification/notification.service';
 import { AuthService } from './auth/auth.service';
+import { AnnouncementService } from './announcement/announcement.service';
+import { AnnouncementModule } from './announcement/announcement.module';
 
 @Module({
   imports: [
@@ -47,6 +49,7 @@ import { AuthService } from './auth/auth.service';
         },
       },
     }),
+    AnnouncementModule,
   ],
   controllers: [AppController, AuthController],
   providers: [
@@ -59,6 +62,7 @@ import { AuthService } from './auth/auth.service';
     },
     OperationResultService,
     NotificationService,
+    AnnouncementService,
   ],
 })
 export class AppModule implements NestModule {
