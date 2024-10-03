@@ -2,6 +2,7 @@ import {
   IsDecimal,
   IsEnum,
   IsNotEmpty,
+  IsString,
   Length,
   Validate,
 } from 'class-validator';
@@ -17,10 +18,8 @@ export class AnnouncementCreateRequest {
   })
   type: string;
 
-  @Length(3, 200, {
-    message: '',
-  })
-  ownerFullName: string;
+  @Length(3, 200)
+  fullName: string;
 
   @IsNotEmpty()
   @Validate(IsCPFValid)
@@ -29,7 +28,10 @@ export class AnnouncementCreateRequest {
   @IsNotEmpty()
   processNumber: string;
 
+  @IsNotEmpty()
   processOrigin: string;
+
+  @IsNotEmpty()
   processCourt: string;
 
   @IsNotEmpty()
@@ -59,4 +61,19 @@ export class AnnouncementCreateRequest {
   @IsNotEmpty()
   @IsEnum(PaymentReceivingOption)
   paymentOption: PaymentReceivingOption;
+
+  @IsString()
+  key?: string;
+
+  @Length(3, 200)
+  ownerBankAccount?: string;
+
+  @IsString()
+  documentBankAccount?: string;
+
+  @IsString()
+  bankAccount?: string;
+
+  @IsString()
+  agencyBankAccount: string;
 }
