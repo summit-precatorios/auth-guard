@@ -7,9 +7,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     try {
       await this.$connect();
     } catch (error) {
-      await this.$disconnect();
-
       throw new BadRequestException('Erro de conexão ao banco de dados', error);
+    } finally {
+      await this.$disconnect();
     }
   }
 }

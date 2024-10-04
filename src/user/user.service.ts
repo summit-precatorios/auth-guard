@@ -5,25 +5,25 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
 import { Role } from 'src/decorators/roles.decorator';
 import { Code } from 'src/operation-result/code.enum';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserCommandRequest } from './requests/create-user-command.request';
 import { CreateUserCommandResponse } from './responses/create-user-command.response';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(command: CreateUserCommandRequest) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: {
         document: command.document,
       },
     });
 
     if (!user) {
-      const user = await this.prisma.user.create({
+      const user = await this.prismaService.user.create({
         data: {
           document: command.document,
           email: command.email,
@@ -50,7 +50,7 @@ export class UserService {
   }
 
   async findAll() {
-    const users = await this.prisma.user.findMany({
+    const users = await this.prismaService.user.findMany({
       select: {
         image: true,
         createdAt: true,
@@ -66,6 +66,15 @@ export class UserService {
             description: true,
           },
         },
+        announcements: {
+          select: {
+            title: true,
+            price: true,
+            salePrice: true,
+            liquidBalance: true,
+            createdAt: true,
+          },
+        },
       },
     });
 
@@ -73,7 +82,7 @@ export class UserService {
   }
 
   async findOne(document: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: {
         document: document,
       },
@@ -92,7 +101,7 @@ export class UserService {
   }
 
   async findOneByEmail(email: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: {
         email: email,
       },
@@ -108,7 +117,7 @@ export class UserService {
   }
 
   async findRoles(document: string) {
-    const roles = await this.prisma.role.findMany({
+    const roles = await this.prismaService.role.findMany({
       where: {
         user: {
           document: document,
@@ -124,7 +133,7 @@ export class UserService {
     password: string,
     token: string,
   ) {
-    await this.prisma.$transaction(async (context) => {
+    await this.prismaService.$transaction(async (context) => {
       await context.user.update({
         data: {
           password: password,
@@ -150,7 +159,7 @@ export class UserService {
 
   async activeAccountByDocument(document: string, token: string) {
     try {
-      await this.prisma.$transaction(async (context) => {
+      await this.prismaService.$transaction(async (context) => {
         const user = await context.user.update({
           data: {
             isActive: true,

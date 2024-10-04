@@ -9,6 +9,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// auth models
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -37,18 +38,19 @@ model Session {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  document  String    @unique
-  name      String
-  email     String    @unique
-  password  String
-  isActive  Boolean   @default(false) @db.Boolean
-  image     String?
-  accounts  Account[]
-  sessions  Session[]
-  roles     Role[]
-  createdAt DateTime  @default(now()) @db.Timestamp()
-  deletedAt DateTime? @db.Timestamp()
+  id            String         @id @default(cuid())
+  document      String         @unique
+  name          String
+  email         String         @unique
+  password      String
+  isActive      Boolean        @default(false) @db.Boolean
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  roles         Role[]
+  announcements Announcement[]
+  createdAt     DateTime       @default(now()) @db.Timestamp()
+  deletedAt     DateTime?      @db.Timestamp()
 }
 
 model VerificationToken {
@@ -58,7 +60,6 @@ model VerificationToken {
   issuer     String   @db.VarChar(75) // ACTIVATION_TOKEN | RECOVERY_PASSWORD_TOKEN
 
   @@unique([identifier, token])
-
 }
 
 model Role {
@@ -66,5 +67,33 @@ model Role {
   userId      String?
   name        String  @db.VarChar(15)
   description String? @db.VarChar(75)
-  user        User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User?   @relation(fields: [userId], references: [id])
+}
+
+// announcement models
+
+model Announcement {
+  id                  String  @id @default(cuid())
+  title               String? @db.VarChar()
+  type                String  @db.VarChar()
+  ownerFullName       String  @db.VarChar()
+  ownerDocument       String  @db.VarChar()
+  lawSuit             String  @db.VarChar()
+  court               String  @db.VarChar()
+  origin              String  @db.VarChar()
+  price               Decimal @db.Decimal()
+  salePrice           Decimal @db.Decimal()
+  liquidBalance       Decimal @db.Decimal()
+  paymentOption       String  @db.VarChar()
+  pixKey              String? @db.VarChar()
+  ownerBankAccount    String? @db.VarChar()
+  documentBankAccount String? @db.VarChar()
+  bankAccount         String? @db.VarChar()
+  agencyBankAccount   String? @db.VarChar()
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now()) @db.Timestamp()
+  deletedAt DateTime? @db.Timestamp()
 }

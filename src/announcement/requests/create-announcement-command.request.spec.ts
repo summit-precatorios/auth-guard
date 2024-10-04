@@ -1,15 +1,15 @@
 import { validate } from 'class-validator';
-import { AnnouncementCreateRequest } from 'src/announcement/requests/announcement-create.request';
+import { CreateAnnouncementCommandRequest } from 'src/announcement/requests/create-announcement-command.request';
 
 describe('AnnouncementCreateRequest', () => {
   it('should validate type as "RPV" or "PRECATORIO"', async () => {
-    const validRequest1 = new AnnouncementCreateRequest();
+    const validRequest1 = new CreateAnnouncementCommandRequest();
     validRequest1.type = 'RPV';
 
-    const validRequest2 = new AnnouncementCreateRequest();
+    const validRequest2 = new CreateAnnouncementCommandRequest();
     validRequest2.type = 'PRECATORIO';
 
-    const invalidReques = new AnnouncementCreateRequest();
+    const invalidReques = new CreateAnnouncementCommandRequest();
     invalidReques.type = 'INVALID';
 
     const errors1 = await validate(validRequest1);

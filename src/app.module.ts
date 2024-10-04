@@ -17,6 +17,7 @@ import { NotificationService } from './notification/notification.service';
 import { AuthService } from './auth/auth.service';
 import { AnnouncementService } from './announcement/announcement.service';
 import { AnnouncementModule } from './announcement/announcement.module';
+import { AnnouncementController } from 'src/announcement/announcement.controller';
 
 @Module({
   imports: [
@@ -51,7 +52,7 @@ import { AnnouncementModule } from './announcement/announcement.module';
     }),
     AnnouncementModule,
   ],
-  controllers: [AppController, AuthController],
+  controllers: [AppController, AuthController, AnnouncementController],
   providers: [
     AppService,
     PrismaService,

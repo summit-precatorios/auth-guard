@@ -10,7 +10,7 @@ import { PaymentReceivingOption } from 'src/enums/payment-method.enum';
 import { IsTypeAnnouncementString } from 'src/validators/type-announcement.validator';
 import { IsCPFValid } from 'src/validators/valid-cpf.validator';
 
-export class AnnouncementCreateRequest {
+export class CreateAnnouncementCommandRequest {
   @IsNotEmpty()
   @IsTypeAnnouncementString({
     message:
@@ -19,20 +19,20 @@ export class AnnouncementCreateRequest {
   type: string;
 
   @Length(3, 200)
-  fullName: string;
+  ownerFullName: string;
 
   @IsNotEmpty()
   @Validate(IsCPFValid)
-  document: string;
+  ownerDocument: string;
 
   @IsNotEmpty()
-  processNumber: string;
+  lawSuit: string;
 
   @IsNotEmpty()
-  processOrigin: string;
+  origin: string;
 
   @IsNotEmpty()
-  processCourt: string;
+  court: string;
 
   @IsNotEmpty()
   @IsDecimal({
@@ -63,7 +63,7 @@ export class AnnouncementCreateRequest {
   paymentOption: PaymentReceivingOption;
 
   @IsString()
-  key?: string;
+  pixKey?: string;
 
   @Length(3, 200)
   ownerBankAccount?: string;
