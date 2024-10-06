@@ -22,6 +22,8 @@ export class AnnouncementService {
     private readonly userService: UserService,
   ) {}
   async create(request: CreateAnnouncementCommandRequest) {
+    const userId: string = await this._getLoggedUserId();
+
     try {
       const createAnnouncement = await this.prismaService.announcement.create({
         data: {
@@ -43,7 +45,7 @@ export class AnnouncementService {
           ownerBankAccount: request.ownerBankAccount,
           pixKey: request.pixKey ?? '',
           title: `Direitos Creditórios - ${request.type}`,
-          userId: await this._getLoggedUserId(),
+          userId,
         },
         select: {
           id: true,
@@ -66,7 +68,7 @@ export class AnnouncementService {
   }
 
   private async _getLoggedUserId(): Promise<string> {
-    if (!this.request.headers.authorization)
+    if (!this.request.headers['authorization'])
       throw new UnauthorizedException('token is missing!');
 
     const token: string = this.request.headers['authorization'].split(' ')[1];
