@@ -1,12 +1,13 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions"]
+  previewFeatures = ["postgresqlExtensions", "multiSchema"]
   extensions      = [uuidOssp(map: "uuid-ossp")]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public", "auth"]
 }
 
 // auth models
@@ -27,6 +28,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@schema("auth")
 }
 
 model Session {
@@ -35,6 +37,8 @@ model Session {
   userId       String
   expires      DateTime @db.Timestamp()
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@schema("auth")
 }
 
 model User {
@@ -51,6 +55,8 @@ model User {
   announcements Announcement[]
   createdAt     DateTime       @default(now()) @db.Timestamp()
   deletedAt     DateTime?      @db.Timestamp()
+
+  @@schema("public")
 }
 
 model VerificationToken {
@@ -60,6 +66,7 @@ model VerificationToken {
   issuer     String   @db.VarChar(75) // ACTIVATION_TOKEN | RECOVERY_PASSWORD_TOKEN
 
   @@unique([identifier, token])
+  @@schema("auth")
 }
 
 model Role {
@@ -68,6 +75,8 @@ model Role {
   name        String  @db.VarChar(15)
   description String? @db.VarChar(75)
   user        User?   @relation(fields: [userId], references: [id])
+
+  @@schema("auth")
 }
 
 // announcement models
@@ -96,4 +105,6 @@ model Announcement {
 
   createdAt DateTime  @default(now()) @db.Timestamp()
   deletedAt DateTime? @db.Timestamp()
+
+  @@schema("public")
 }
