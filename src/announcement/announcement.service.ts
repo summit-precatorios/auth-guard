@@ -21,7 +21,9 @@ export class AnnouncementService {
     private readonly authService: AuthService,
     private readonly userService: UserService,
   ) {}
-  async create(request: CreateAnnouncementCommandRequest) {
+  async create(
+    request: CreateAnnouncementCommandRequest,
+  ): Promise<CreateAnnouncementCommandResponse> {
     const userId: string = await this._getLoggedUserId();
 
     try {
