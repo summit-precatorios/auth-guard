@@ -1,5 +1,5 @@
+import { Transform } from 'class-transformer';
 import {
-  IsDecimal,
   IsEnum,
   IsNotEmpty,
   IsString,
@@ -7,6 +7,7 @@ import {
   Validate,
 } from 'class-validator';
 import { PaymentReceivingOption } from 'src/enums/payment-method.enum';
+import { transformToDecimal } from 'src/utils/transform-decimal.util';
 import { IsTypeAnnouncementString } from 'src/validators/type-announcement.validator';
 import { IsCPFValid } from 'src/validators/valid-cpf.validator';
 
@@ -35,27 +36,13 @@ export class CreateAnnouncementCommandRequest {
   court: string;
 
   @IsNotEmpty()
-  @IsDecimal({
-    decimal_digits: '2',
-    force_decimal: true,
-    locale: 'pt-BR',
-  })
+  @Transform(({ value }) => transformToDecimal(value))
   price: string;
 
   @IsNotEmpty()
-  @IsDecimal({
-    decimal_digits: '2',
-    force_decimal: true,
-    locale: 'pt-BR',
-  })
   salePrice: string;
 
   @IsNotEmpty()
-  @IsDecimal({
-    decimal_digits: '2',
-    force_decimal: true,
-    locale: 'pt-BR',
-  })
   liquidBalance: string;
 
   @IsNotEmpty()
