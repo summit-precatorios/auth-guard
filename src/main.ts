@@ -9,7 +9,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   app.enableCors({
-    origin: ['https://summitprecatorios.com.br/', 'http://localhost:3000'],
+    origin: [
+      'https://summitprecatorios.com.br/',
+      'http://localhost:3000',
+      'https://www.summitprecatorios.com.br',
+    ],
     methods: ['GET', 'POST', 'UPDATE', 'PATCH'],
   });
 
