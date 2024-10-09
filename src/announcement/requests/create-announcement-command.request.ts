@@ -43,6 +43,7 @@ export class CreateAnnouncementCommandRequest {
   @IsNotEmpty()
   salePrice: string;
 
+  @Transform(({ value }) => transformToDecimal(value))
   @IsNotEmpty()
   liquidBalance: string;
 
