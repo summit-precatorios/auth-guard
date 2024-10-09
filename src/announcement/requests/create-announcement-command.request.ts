@@ -39,6 +39,7 @@ export class CreateAnnouncementCommandRequest {
   @Transform(({ value }) => transformToDecimal(value))
   price: string;
 
+  @Transform(({ value }) => transformToDecimal(value))
   @IsNotEmpty()
   salePrice: string;
 
