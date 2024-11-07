@@ -22,6 +22,7 @@ import { AuthActivatorAccountRequest } from './requests/auth-activator-account.r
 import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
 import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
 import { AuthRecoveryPasswordResponse } from './responses/auth-recovery-password.response';
+import { AuthVerifyAccountByDocumentRequest } from 'src/auth/requests/auth-verify-account-by-document.request';
 
 interface jwtDataPayload {
   payload: {
@@ -177,6 +178,30 @@ export class AuthService {
       payload.document,
       request.token,
     );
+  }
+
+  async verifyAccountByDocument(request: AuthVerifyAccountByDocumentRequest) {
+    const { document } = request;
+
+    const user = await this.userService.findOne(document);
+
+    if (user) {
+      const activationToken = await this.generateActivationToken(document);
+
+      await this.notificationService.sendVerifyAcountNotification(
+        user.email,
+        user.name,
+        activationToken ?? '',
+      );
+    }
+
+    const response = {
+      message: 'resource updated!',
+      statusCode: Code.Ok,
+      success: true,
+    };
+
+    return response;
   }
 
   // TODO - refatorar e atribuir esta função ao JwtServices

@@ -6,6 +6,7 @@ import { AuthSignInCommand } from './commands/auth-sign-in.command';
 import { AuthActivatorAccountRequest } from './requests/auth-activator-account.request';
 import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
 import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
+import { AuthVerifyAccountByDocumentRequest } from 'src/auth/requests/auth-verify-account-by-document.request';
 
 @Controller('auth')
 export class AuthController {
@@ -38,5 +39,13 @@ export class AuthController {
   @Patch('active/account')
   async activeAccount(@Body() request: AuthActivatorAccountRequest) {
     return this.authService.activeAccount(request);
+  }
+
+  @Public()
+  @Patch('verify/account')
+  async verifyAccountByDocument(
+    @Body() request: AuthVerifyAccountByDocumentRequest,
+  ) {
+    return this.authService.verifyAccountByDocument(request);
   }
 }

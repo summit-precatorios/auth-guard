@@ -1,0 +1,42 @@
+<%- include('./includes/header.ejs') %>
+
+    <h1>Olá, <%= userName %>!</h1>
+    <p>Recebemos uma solicitação para ativar sua conta.</p>
+    <p>Se você não fez essa solicitação, por favor, ignore este e-mail.</p>
+    <p>Se foi você quem solicitou, clique no botão abaixo para concluir a verificação da sua conta:</p>
+
+
+    <p style="text-align: left; margin: 42px 0;">
+        <a href="<%=process.env.CALLBACK_URL%>active/account/<%=token%>" style="
+        font-family: 'Inter',sans-serif;
+        background-color: #facc15;
+        border-radius: 3px;
+        color: black;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: normal;
+        font-style: normal;
+        text-decoration: none;
+        line-height: 20px;
+        padding: 15px 0 15px 0;
+        text-align: center;
+        width: 150px;" target="_blank">
+            Verificar minha conta
+        </a>
+    </p>
+
+    <p>Se tiver alguma dúvida ou precisar de assistência, nossa equipe de suporte está sempre disponível
+        para ajudar. Você pode entrar em contato pelo email <a href="mailto:<%= supportEmail %>"
+            style="color: #1a73e8;">
+            <%= supportEmail %>.
+        </a>
+
+        <!--TODO create help section in plataform  -->
+
+        <!-- </a> ou visitar nossa seção de ajuda.</p> -->
+
+    <p>Estamos comprometidos em oferecer a melhor experiência possível e estamos sempre abertos a sugestões e
+        feedback. Sinta-se à vontade para compartilhar suas ideias conosco.</p>
+    <p>Mais uma vez, bem-vindo(a) à <%= appName %>! Esperamos que você tenha uma jornada fantástica conosco.</p>
+
+    <%- include('./includes/footer.ejs') %>

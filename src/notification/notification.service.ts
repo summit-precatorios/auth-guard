@@ -39,4 +39,27 @@ export class NotificationService extends NotificationStrategyService {
 
     await this.sendNotification(schema);
   }
+
+  async sendVerifyAcountNotification(
+    email: string,
+    userName: string,
+    token: string,
+  ) {
+    const schema: INotificationSchema = {
+      subject: 'Verificação da conta',
+      template: 'verify-account',
+      user: {
+        email,
+      },
+      context: {
+        token,
+        appName: 'Summit Precatórios',
+        userName,
+        supportEmail: 'summitprecatorios@gmail.com',
+        senderName: 'Equipe Summit',
+      },
+    };
+
+    await this.sendNotification(schema);
+  }
 }
