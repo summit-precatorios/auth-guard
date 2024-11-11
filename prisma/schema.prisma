@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions", "multiSchema"]
+  previewFeatures = ["postgresqlExtensions", "multiSchema", "omitApi"]
   extensions      = [uuidOssp(map: "uuid-ossp")]
 }
 
