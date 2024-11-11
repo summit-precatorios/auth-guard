@@ -2,6 +2,7 @@ import { Transform } from 'class-transformer';
 import {
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
   Validate,
@@ -52,17 +53,22 @@ export class CreateAnnouncementCommandRequest {
   paymentOption: PaymentReceivingOption;
 
   @IsString()
+  @IsOptional()
   pixKey?: string;
 
   @Length(3, 200)
+  @IsOptional()
   ownerBankAccount?: string;
 
   @IsString()
+  @IsOptional()
   documentBankAccount?: string;
 
   @IsString()
+  @IsOptional()
   bankAccount?: string;
 
   @IsString()
+  @IsOptional()
   agencyBankAccount: string;
 }

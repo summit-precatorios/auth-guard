@@ -81,6 +81,20 @@ export class UserService {
     return users;
   }
 
+  async findAnnouncementsById(document: string) {
+    const announcements = this.prismaService.announcement.findMany({
+      where: {
+        user: {
+          document: document,
+        },
+      },
+    });
+
+    // ? if (!announcements) throw new NotFoundException();
+
+    return announcements;
+  }
+
   async findOne(document: string) {
     const user = await this.prismaService.user.findUnique({
       where: {

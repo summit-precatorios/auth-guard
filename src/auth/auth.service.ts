@@ -186,8 +186,6 @@ export class AuthService {
 
     const user = await this.userService.findOne(document);
 
-    console.log(user);
-
     if (user && !user.isActive) {
       const activationToken = await this.generateActivationToken(document);
 
