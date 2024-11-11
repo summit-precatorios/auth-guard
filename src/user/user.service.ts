@@ -10,8 +10,6 @@ import { Code } from 'src/operation-result/code.enum';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserCommandRequest } from './requests/create-user-command.request';
 import { CreateUserCommandResponse } from './responses/create-user-command.response';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UserService {
@@ -150,34 +148,22 @@ export class UserService {
     password: string,
     token: string,
   ) {
-    await this.prismaService.$transaction(
-      async (
-        context: Omit<
-          PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-          | '$connect'
-          | '$disconnect'
-          | '$on'
-          | '$transaction'
-          | '$use'
-          | '$extends'
-        >,
-      ) => {
-        await context.user.update({
-          data: {
-            password: password,
-          },
-          where: {
-            document: document,
-          },
-        });
+    await this.prismaService.$transaction(async (context) => {
+      await context.user.update({
+        data: {
+          password: password,
+        },
+        where: {
+          document: document,
+        },
+      });
 
-        await context.verificationToken.delete({
-          where: {
-            token,
-          },
-        });
-      },
-    );
+      await context.verificationToken.delete({
+        where: {
+          token,
+        },
+      });
+    });
 
     return {
       message: 'resource updated',
