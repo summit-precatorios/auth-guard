@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -8,6 +9,7 @@ import {
 
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcrypt';
+import { AuthVerifyAccountByDocumentRequest } from 'src/auth/requests/auth-verify-account-by-document.request';
 import { Role } from 'src/decorators/roles.decorator';
 import { NotificationService } from 'src/notification/notification.service';
 import { Code } from 'src/operation-result/code.enum';
@@ -22,7 +24,6 @@ import { AuthActivatorAccountRequest } from './requests/auth-activator-account.r
 import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
 import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
 import { AuthRecoveryPasswordResponse } from './responses/auth-recovery-password.response';
-import { AuthVerifyAccountByDocumentRequest } from 'src/auth/requests/auth-verify-account-by-document.request';
 
 interface jwtDataPayload {
   payload: {
@@ -185,7 +186,9 @@ export class AuthService {
 
     const user = await this.userService.findOne(document);
 
-    if (user) {
+    console.log(user);
+
+    if (user && !user.isActive) {
       const activationToken = await this.generateActivationToken(document);
 
       await this.notificationService.sendVerifyAcountNotification(
@@ -193,15 +196,17 @@ export class AuthService {
         user.name,
         activationToken ?? '',
       );
+
+      const response = {
+        message: 'resource updated!',
+        statusCode: Code.Ok,
+        success: true,
+      };
+
+      return response;
     }
 
-    const response = {
-      message: 'resource updated!',
-      statusCode: Code.Ok,
-      success: true,
-    };
-
-    return response;
+    throw new ConflictException('Esta conta de usuário já se encontra ativa');
   }
 
   // TODO - refatorar e atribuir esta função ao JwtServices

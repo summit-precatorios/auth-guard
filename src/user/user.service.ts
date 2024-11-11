@@ -86,6 +86,7 @@ export class UserService {
       where: {
         document: document,
       },
+
       include: {
         roles: {
           select: {

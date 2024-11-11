@@ -36,7 +36,6 @@ export class NotificationService extends NotificationStrategyService {
         senderName: 'Equipe Summit',
       },
     };
-
     await this.sendNotification(schema);
   }
 
