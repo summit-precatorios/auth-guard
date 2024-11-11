@@ -26,7 +26,8 @@
 				"piotrpalarz.vscode-gitignore-generator",
 				"Prisma.prisma",
 				"Prisma.prisma-insider",
-				"cweijan.vscode-database-client2"
+				"cweijan.vscode-database-client2",
+				"Jannchie.codetime"
 			]
 		}
 	},
