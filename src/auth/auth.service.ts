@@ -36,6 +36,13 @@ interface jwtDataPayload {
   roles: Array<string>;
 }
 
+interface IRole {
+  name: string;
+  id: string;
+  userId: string | null;
+  description: string | null;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -233,7 +240,7 @@ export class AuthService {
     return {
       accessToken: await this.jwtService.signAsync({
         payload,
-        roles: roles.map((role) => {
+        roles: roles.map((role: IRole) => {
           return role.name;
         }),
       }),
