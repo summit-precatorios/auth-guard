@@ -28,8 +28,6 @@ export class AuthGuard implements CanActivate {
     }
     const request = context.switchToHttp().getRequest();
 
-    console.log(request);
-
     const token = this.extractTokenFromHeader(request);
 
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
@@ -51,10 +49,10 @@ export class AuthGuard implements CanActivate {
   private extractTokenFromHeader(request: Request): string {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
 
-    if (!token) throw new UnauthorizedException('Token is missing');
+    if (!token) throw new UnauthorizedException('token_is_missing');
 
     if (type !== 'Bearer')
-      throw new UnauthorizedException('Format token invalid');
+      throw new UnauthorizedException('token_format_invalid');
 
     return token;
   }

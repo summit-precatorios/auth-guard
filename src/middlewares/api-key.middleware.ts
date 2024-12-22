@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   Injectable,
   NestMiddleware,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 
@@ -11,7 +11,7 @@ export class ApiKeyMiddleware implements NestMiddleware {
     const apiKey = req.headers['x-api-key'];
 
     if (!apiKey || !this.isValidApiKey(apiKey)) {
-      throw new BadRequestException('API key inválida');
+      throw new UnauthorizedException('invalid_api_key');
     }
 
     next();

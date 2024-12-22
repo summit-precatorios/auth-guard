@@ -28,6 +28,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@map("account")
   @@schema("auth")
 }
 
@@ -38,6 +39,7 @@ model Session {
   expires      DateTime @db.Timestamp()
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@map("session")
   @@schema("auth")
 }
 
@@ -56,6 +58,7 @@ model User {
   createdAt     DateTime       @default(now()) @db.Timestamp()
   deletedAt     DateTime?      @db.Timestamp()
 
+  @@map("user")
   @@schema("public")
 }
 
@@ -66,6 +69,7 @@ model VerificationToken {
   issuer     String   @db.VarChar(75) // ACTIVATION_TOKEN | RECOVERY_PASSWORD_TOKEN
 
   @@unique([identifier, token])
+  @@map("verification_token")
   @@schema("auth")
 }
 
@@ -76,6 +80,7 @@ model Role {
   description String? @db.VarChar(75)
   user        User?   @relation(fields: [userId], references: [id])
 
+  @@map("role")
   @@schema("auth")
 }
 
@@ -106,5 +111,7 @@ model Announcement {
   createdAt DateTime  @default(now()) @db.Timestamp()
   deletedAt DateTime? @db.Timestamp()
 
+  @@map("announcement")
   @@schema("public")
 }
+ 

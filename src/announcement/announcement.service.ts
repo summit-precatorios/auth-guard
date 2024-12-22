@@ -73,7 +73,7 @@ export class AnnouncementService {
 
   private async _getLoggedUserId(): Promise<string> {
     if (!this.request.headers['authorization'])
-      throw new UnauthorizedException('token is missing!');
+      throw new UnauthorizedException('token_is_missing');
 
     const token: string = this.request.headers['authorization'].split(' ')[1];
 

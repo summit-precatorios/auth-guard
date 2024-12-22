@@ -24,11 +24,10 @@ import { UserModule } from './user/user.module';
     UserModule,
     AuthModule,
     ConfigModule.forRoot({
-      envFilePath: '.env.local',
+      envFilePath: '.env',
     }),
     MailerModule.forRoot({
       transport: {
-        //! staging configs
         host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT!),
         auth: {

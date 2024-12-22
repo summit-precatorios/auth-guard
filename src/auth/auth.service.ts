@@ -86,7 +86,7 @@ export class AuthService {
       const user = await this.userService.findOne(command.document);
 
       if (!(await compare(command.password, user.password)))
-        throw new UnauthorizedException('Login e/ou senha incorretos');
+        throw new UnauthorizedException('invalid_credentials');
 
       const payload: AuthJwtSignCommand = {
         document: user.document,
@@ -98,7 +98,7 @@ export class AuthService {
 
       return this.providerAccessToken(payload);
     } catch (e) {
-      throw new UnauthorizedException('Login e/ou senha incorretos');
+      throw new UnauthorizedException('invalid_credentials');
     }
   }
 
@@ -224,10 +224,10 @@ export class AuthService {
       return payload;
     } catch (error) {
       if (error instanceof TokenExpiredError) {
-        throw new UnauthorizedException('Token inválido ou expirado');
+        throw new UnauthorizedException('expired_token');
       }
 
-      throw new UnauthorizedException(error);
+      throw new UnauthorizedException('invalid_token', { cause: error });
     }
   }
 

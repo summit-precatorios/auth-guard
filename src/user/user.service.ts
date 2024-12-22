@@ -37,7 +37,7 @@ export class UserService {
       });
 
       const response: CreateUserCommandResponse = {
-        message: 'resource created!',
+        message: 'account_create_success',
         statusCode: Code.Created,
         success: true,
         data: user,
@@ -46,7 +46,7 @@ export class UserService {
       return response;
     }
 
-    throw new ConflictException('Usuário já registrado');
+    throw new ConflictException('user_already_exist');
   }
 
   async findAll() {
@@ -110,7 +110,7 @@ export class UserService {
       },
     });
 
-    if (!user) throw new NotFoundException();
+    if (!user) throw new NotFoundException('user_not_found');
 
     return user;
   }
