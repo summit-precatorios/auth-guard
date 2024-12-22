@@ -224,10 +224,10 @@ export class AuthService {
       return payload;
     } catch (error) {
       if (error instanceof TokenExpiredError) {
-        throw new BadRequestException('Token inválido ou expirado');
+        throw new UnauthorizedException('Token inválido ou expirado');
       }
 
-      throw new BadRequestException(error);
+      throw new UnauthorizedException(error);
     }
   }
 

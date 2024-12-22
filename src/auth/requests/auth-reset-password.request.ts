@@ -1,9 +1,9 @@
-import { IsString, Min } from 'class-validator';
+import { IsJWT, Length } from 'class-validator';
 
 export class AuthResetPasswordRequest {
-  @IsString()
+  @IsJWT()
   token: string;
 
-  @Min(8)
+  @Length(8)
   password: string;
 }

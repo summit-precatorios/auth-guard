@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   summit-dev-postgres:
     container_name: summit-dev-postgres

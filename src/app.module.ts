@@ -1,23 +1,22 @@
 import { MailerModule } from '@nestjs-modules/mailer';
-import { ConfigModule } from '@nestjs/config';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { AnnouncementController } from 'src/announcement/announcement.controller';
+import { AnnouncementModule } from './announcement/announcement.module';
+import { AnnouncementService } from './announcement/announcement.service';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
 import { AuthGuard } from './guard/auth.guard';
 import { ApiKeyMiddleware } from './middlewares/api-key.middleware';
+import { NotificationService } from './notification/notification.service';
 import { OperationResultService } from './operation-result/operation-result.service';
 import { PrismaModule } from './prisma/prisma.module';
-import { PrismaService } from './prisma/prisma.service';
 import { UserModule } from './user/user.module';
-import { NotificationService } from './notification/notification.service';
-import { AuthService } from './auth/auth.service';
-import { AnnouncementService } from './announcement/announcement.service';
-import { AnnouncementModule } from './announcement/announcement.module';
-import { AnnouncementController } from 'src/announcement/announcement.controller';
 
 @Module({
   imports: [
@@ -55,7 +54,6 @@ import { AnnouncementController } from 'src/announcement/announcement.controller
   controllers: [AppController, AuthController, AnnouncementController],
   providers: [
     AppService,
-    PrismaService,
     AuthService,
     {
       provide: APP_GUARD,

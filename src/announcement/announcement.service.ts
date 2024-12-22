@@ -69,6 +69,8 @@ export class AnnouncementService {
     }
   }
 
+  // async findOne(id: string) {}
+
   private async _getLoggedUserId(): Promise<string> {
     if (!this.request.headers['authorization'])
       throw new UnauthorizedException('token is missing!');
