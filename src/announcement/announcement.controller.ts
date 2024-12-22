@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AnnouncementService } from 'src/announcement/announcement.service';
 import { CreateAnnouncementCommandRequest } from 'src/announcement/requests/create-announcement-command.request';
 import { Role, Roles } from 'src/decorators/roles.decorator';
