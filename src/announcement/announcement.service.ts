@@ -56,7 +56,7 @@ export class AnnouncementService {
       });
 
       const response: CreateAnnouncementCommandResponse = {
-        message: 'resource created!',
+        message: 'resource_created',
         statusCode: Code.Created,
         success: true,
         data: createAnnouncement,
