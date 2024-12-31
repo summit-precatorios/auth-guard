@@ -14,7 +14,7 @@ import { JwtContansts } from './constants';
       global: true,
       secret: JwtContansts.secret,
       signOptions: {
-        expiresIn: JwtContansts.expiration,
+        expiresIn: JwtContansts.accessTokenExpiration,
         audience: JwtContansts.audience,
         issuer: JwtContansts.issuer,
       },

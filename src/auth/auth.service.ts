@@ -102,6 +102,14 @@ export class AuthService {
     }
   }
 
+  // async signinWithoutCredentials(command: AuthSigninWithoutCredentialsCommand) {
+  //   try {
+  //     const user = await this.userService.findOneById(command.userIdentity);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+
   async recoveryPasswordRequest(command: AuthRecoveryPasswordRequest) {
     const user = await this.userService.findOneByEmail(command.email);
 
@@ -203,7 +211,7 @@ export class AuthService {
       );
 
       const response = {
-        message: 'resource updated!',
+        message: 'resource_updated!',
         statusCode: Code.Ok,
         success: true,
       };
