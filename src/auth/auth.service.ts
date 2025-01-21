@@ -175,20 +175,16 @@ export class AuthService {
   async activeAccount(request: AuthActivatorAccountRequest) {
     const isValidToken = await this.verify(request.token);
 
-    if (!isValidToken)
-      throw new BadRequestException('Token de ativação de conta inválido');
+    if (!isValidToken) throw new BadRequestException('invalid_token');
 
     const payload = await this.jwtService.decode(request.token);
 
     if (payload?.role !== Role.AccountActivator)
-      throw new ForbiddenException(
-        'Acesso negado. Não foi possível realizar a ativação da sua conta',
-      );
+      throw new ForbiddenException('access_denied');
 
     const user = this.userService.findOne(payload.document);
 
-    if (!user)
-      throw new NotFoundException('Conta não encontrada para a ativação');
+    if (!user) throw new NotFoundException('account_not_found');
 
     return await this.userService.activeAccountByDocument(
       payload.document,
