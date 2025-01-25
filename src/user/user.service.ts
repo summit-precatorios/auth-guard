@@ -10,6 +10,9 @@ import { Code } from 'src/operation-result/code.enum';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserCommandRequest } from './requests/create-user-command.request';
 import { CreateUserCommandResponse } from './responses/create-user-command.response';
+import { User } from '@prisma/client';
+
+type UserWithoutPassword = Omit<User, 'password'>;
 
 @Injectable()
 export class UserService {
@@ -115,6 +118,18 @@ export class UserService {
     return user;
   }
 
+  async findOneById(id: string): Promise<UserWithoutPassword> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) throw new NotFoundException('user_not_found');
+
+    return user;
+  }
+
   async findOneByEmail(email: string) {
     const user = await this.prismaService.user.findUnique({
       where: {
@@ -166,7 +181,7 @@ export class UserService {
     });
 
     return {
-      message: 'resource updated',
+      message: 'resource_updated',
       error: null,
       statusCode: HttpStatus.OK,
     };
@@ -200,7 +215,7 @@ export class UserService {
       });
 
       return {
-        message: 'resource updated',
+        message: 'resource_updated',
         error: null,
         statusCode: HttpStatus.OK,
       };
