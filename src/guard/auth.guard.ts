@@ -30,6 +30,11 @@ export class AuthGuard implements CanActivate {
 
     const token = this.extractTokenFromHeader(request);
 
+    /**
+     * @description Retorna as roles definidas no controller do endpoint para a autorização dos recursos
+     * @example Roles(Role.User)
+     *          Get('announcements/:document')
+     */
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
