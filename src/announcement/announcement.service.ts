@@ -69,6 +69,16 @@ export class AnnouncementService {
     }
   }
 
+  async findAll() {
+    const announcements = this.prismaService.announcement.findMany({
+      where: {
+        deletedAt: null,
+      },
+    });
+
+    return announcements;
+  }
+
   // async findOne(id: string) {}
 
   private async _getLoggedUserId(): Promise<string> {

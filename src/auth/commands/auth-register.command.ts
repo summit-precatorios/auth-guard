@@ -3,7 +3,6 @@ import {
   IsNotEmpty,
   IsNumberString,
   IsString,
-  IsStrongPassword,
   Length,
 } from 'class-validator';
 
@@ -15,9 +14,9 @@ export class AuthRegisterCommand {
   @IsEmail()
   email: string;
 
-  @IsStrongPassword({
-    minLength: 8,
-  })
+  // @IsStrongPassword({
+  //   minLength: 8,
+  // })
   @IsString()
   @IsNotEmpty()
   password: string;
