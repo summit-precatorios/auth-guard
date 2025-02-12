@@ -215,7 +215,7 @@ export class AuthService {
       return response;
     }
 
-    throw new ConflictException('Esta conta de usuário já se encontra ativa');
+    throw new ConflictException('user_already_active');
   }
 
   // TODO - refatorar e atribuir esta função ao JwtServices

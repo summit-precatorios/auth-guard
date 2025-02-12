@@ -5,12 +5,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { Role } from 'src/decorators/roles.decorator';
 import { Code } from 'src/operation-result/code.enum';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserCommandRequest } from './requests/create-user-command.request';
 import { CreateUserCommandResponse } from './responses/create-user-command.response';
-import { User } from '@prisma/client';
 
 type UserWithoutPassword = Omit<User, 'password'>;
 
