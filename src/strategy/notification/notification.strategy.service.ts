@@ -16,6 +16,7 @@ export abstract class NotificationStrategyService
         context: schema.context,
       });
     } catch (error) {
+      console.error(error);
       throw new BadRequestException(error);
     }
   }

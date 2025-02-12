@@ -13,17 +13,17 @@ datasource db {
 // auth models
 model Account {
   id                String  @id @default(cuid())
-  userId            String
+  userId            String  @unique
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
+  refreshToken      String? @db.Text
+  accessToken       String? @db.Text
+  expiresAt         Int?
+  tokenType         String?
   scope             String?
-  id_token          String? @db.Text
-  session_state     String?
+  idToken           String? @db.Text
+  sessionState      String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -44,19 +44,20 @@ model Session {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  document      String         @unique
-  name          String
-  email         String         @unique
-  password      String
-  isActive      Boolean        @default(false) @db.Boolean
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  roles         Role[]
+  id        String    @id @default(cuid())
+  document  String    @unique
+  name      String
+  email     String    @unique
+  password  String
+  isActive  Boolean   @default(false) @db.Boolean
+  image     String?
+  createdAt DateTime  @default(now()) @db.Timestamp()
+  deletedAt DateTime? @db.Timestamp()
+
   announcements Announcement[]
-  createdAt     DateTime       @default(now()) @db.Timestamp()
-  deletedAt     DateTime?      @db.Timestamp()
+  roles         Role[]
+  sessions      Session[]
+  account       Account?
 
   @@map("user")
   @@schema("public")
@@ -86,6 +87,14 @@ model Role {
 
 // announcement models
 
+enum AnnouncementStatus {
+  APROVED
+  PENDENT
+  REPROVED
+
+  @@schema("public")
+}
+
 model Announcement {
   id                  String  @id @default(cuid())
   title               String? @db.VarChar()
@@ -108,10 +117,10 @@ model Announcement {
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
 
-  createdAt DateTime  @default(now()) @db.Timestamp()
-  deletedAt DateTime? @db.Timestamp()
+  status    AnnouncementStatus @default(PENDENT)
+  createdAt DateTime           @default(now()) @db.Timestamp()
+  deletedAt DateTime?          @db.Timestamp()
 
   @@map("announcement")
   @@schema("public")
 }
- 
