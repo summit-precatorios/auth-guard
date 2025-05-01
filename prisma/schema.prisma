@@ -27,7 +27,7 @@ model Account {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
+  // TODO: encontrar melhor abordagem para a vinculação de uma Account com o User @@unique([provider, providerAccountId]) 
   @@map("account")
   @@schema("auth")
 }

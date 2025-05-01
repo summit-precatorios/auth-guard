@@ -5,6 +5,8 @@ import { NotificationStrategyService } from 'src/strategy/notification/notificat
 @Injectable()
 export class NotificationService extends NotificationStrategyService {
   async sendRecoveryPasswordNotification(email: string, token: string) {
+    console.log('send recovery password is called');
+
     const schema: INotificationSchema = {
       subject: 'Redefinição da senha da Plataforma Summit Precatórios',
       template: 'recovery-password',

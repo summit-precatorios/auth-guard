@@ -18,7 +18,7 @@ export class PrismaService
     try {
       await this.$connect();
 
-      this.logger.debug('Database is running!');
+      this.logger.log('Database is running!');
     } catch (error) {
       if (error instanceof PrismaClientInitializationError)
         this.logger.error(error);

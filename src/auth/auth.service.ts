@@ -96,25 +96,35 @@ export class AuthService {
         isActive: user.isActive,
       };
 
-      return this.providerAccessToken(payload);
+      return this.providerAccessAndRefreshTokens(payload);
     } catch (e) {
       throw new UnauthorizedException('invalid_credentials');
     }
   }
 
-  // async signinWithoutCredentials(command: AuthSigninWithoutCredentialsCommand) {
-  //   try {
-  //     const user = await this.userService.findOneById(command.userIdentity);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
+  async signPayload(payload: string): Promise<{ access_token: string }> {
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  }
+
+  async verifyPayload(token: string): Promise<object> {
+    return (
+      this,
+      this.jwtService.verifyAsync(token, {
+        secret: JwtContansts.secret,
+        // publicKey: JwtContansts.publicSecret,
+      })
+    );
+  }
 
   async recoveryPasswordRequest(command: AuthRecoveryPasswordRequest) {
     const user = await this.userService.findOneByEmail(command.email);
 
     if (user) {
       try {
+        console.log(JwtContansts.secret);
+
         const verification = await this.prismaService.verificationToken.create({
           data: {
             token: await this.jwtService.signAsync(
@@ -146,11 +156,11 @@ export class AuthService {
 
         return response;
       } catch (error) {
-        throw new BadRequestException(error);
+        console.log(error);
+
+        throw new BadRequestException();
       }
     }
-
-    throw new BadRequestException();
   }
 
   async resetPassword(request: AuthResetPasswordRequest) {
@@ -236,10 +246,56 @@ export class AuthService {
   }
 
   // TODO - refatorar e atribuir esta função ao JwtServices
-  private async providerAccessToken(
+  private async providerAccessAndRefreshTokens(
     payload: AuthJwtSignCommand,
-  ): Promise<{ accessToken: string }> {
-    const roles = await this.userService.findRoles(payload.document);
+  ): Promise<{ accessToken: string; refreshToken: string | null }> {
+    const transaction = await this.prismaService.$transaction(
+      async (context) => {
+        const roles = await context.role.findMany({
+          where: {
+            user: {
+              document: payload.document,
+            },
+          },
+        });
+
+        const user = await context.user.findUnique({
+          where: {
+            document: payload.document,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        const upSertRefreshToken = await context.account.upsert({
+          where: {
+            userId: user?.id,
+          },
+          update: {
+            refreshToken: await this.jwtService.signAsync({
+              payload: user?.id,
+            }),
+          },
+          create: {
+            userId: user!.id,
+            type: Token.RefreshToken,
+            provider: '',
+            providerAccountId: '',
+            refreshToken: await this.jwtService.signAsync({
+              payload: user?.id,
+            }),
+          },
+          select: {
+            refreshToken: true,
+          },
+        });
+
+        return { roles, upSertRefreshToken: upSertRefreshToken.refreshToken };
+      },
+    );
+
+    const { roles, upSertRefreshToken } = transaction;
 
     return {
       accessToken: await this.jwtService.signAsync({
@@ -248,6 +304,7 @@ export class AuthService {
           return role.name;
         }),
       }),
+      refreshToken: upSertRefreshToken,
     };
   }
 

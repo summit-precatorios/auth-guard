@@ -6,8 +6,6 @@ import { APP_GUARD } from '@nestjs/core';
 import { AnnouncementController } from 'src/announcement/announcement.controller';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { AnnouncementService } from './announcement/announcement.service';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
@@ -24,7 +22,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     AuthModule,
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      envFilePath: '.env.development.local',
     }),
     MailerModule.forRoot({
       transport: {
@@ -50,9 +48,8 @@ import { UserModule } from './user/user.module';
     }),
     AnnouncementModule,
   ],
-  controllers: [AppController, AuthController, AnnouncementController],
+  controllers: [AuthController, AnnouncementController],
   providers: [
-    AppService,
     AuthService,
     {
       provide: APP_GUARD,
