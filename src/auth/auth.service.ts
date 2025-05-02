@@ -3,6 +3,7 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -45,6 +46,8 @@ interface IRole {
 
 @Injectable()
 export class AuthService {
+  private readonly _logger = new Logger(AuthService.name);
+
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
@@ -77,6 +80,8 @@ export class AuthService {
       success: createUser.success,
       data: createUser.data,
     };
+
+    this._logger.log(response.message);
 
     return response;
   }

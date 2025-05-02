@@ -3,6 +3,7 @@ import {
   ConflictException,
   HttpStatus,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
@@ -16,6 +17,7 @@ type UserWithoutPassword = Omit<User, 'password'>;
 
 @Injectable()
 export class UserService {
+  private readonly _logger = new Logger(UserService.name);
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(command: CreateUserCommandRequest) {
@@ -48,6 +50,12 @@ export class UserService {
 
       return response;
     }
+
+    this._logger.debug('account_create_failed', {
+      cause: `account: '${user.email}' already exist`,
+      error: 'Conflit',
+      statusCode: HttpStatus.CONFLICT,
+    });
 
     throw new ConflictException('user_already_exist');
   }
