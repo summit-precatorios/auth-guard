@@ -5,19 +5,19 @@ import {
   Injectable,
   Logger,
   NotFoundException,
-} from '@nestjs/common';
-import { User } from '@prisma/client';
-import { Role } from 'src/decorators/roles.decorator';
-import { Code } from 'src/operation-result/code.enum';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserCommandRequest } from './requests/create-user-command.request';
-import { CreateUserCommandResponse } from './responses/create-user-command.response';
+} from '@nestjs/common'
+import { User } from '@prisma/client'
+import { Role } from 'src/decorators/roles.decorator'
+import { Code } from 'src/operation-result/code.enum'
+import { PrismaService } from 'src/prisma/prisma.service'
+import { CreateUserCommandRequest } from './requests/create-user-command.request'
+import { CreateUserCommandResponse } from './responses/create-user-command.response'
 
-type UserWithoutPassword = Omit<User, 'password'>;
+type UserWithoutPassword = Omit<User, 'password'>
 
 @Injectable()
 export class UserService {
-  private readonly _logger = new Logger(UserService.name);
+  private readonly _logger = new Logger(UserService.name)
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(command: CreateUserCommandRequest) {
@@ -25,7 +25,7 @@ export class UserService {
       where: {
         document: command.document,
       },
-    });
+    })
 
     if (!user) {
       const user = await this.prismaService.user.create({
@@ -39,25 +39,25 @@ export class UserService {
           name: true,
           email: true,
         },
-      });
+      })
 
       const response: CreateUserCommandResponse = {
         message: 'account_create_success',
         statusCode: Code.Created,
         success: true,
         data: user,
-      };
+      }
 
-      return response;
+      return response
     }
 
     this._logger.debug('account_create_failed', {
       cause: `account: '${user.email}' already exist`,
       error: 'Conflit',
       statusCode: HttpStatus.CONFLICT,
-    });
+    })
 
-    throw new ConflictException('user_already_exist');
+    throw new ConflictException('user_already_exist')
   }
 
   async findAll() {
@@ -87,9 +87,9 @@ export class UserService {
           },
         },
       },
-    });
+    })
 
-    return users;
+    return users
   }
 
   async findAnnouncementsById(document: string) {
@@ -99,11 +99,11 @@ export class UserService {
           document: document,
         },
       },
-    });
+    })
 
     // ? if (!announcements) throw new NotFoundException();
 
-    return announcements;
+    return announcements
   }
 
   async findOne(document: string) {
@@ -119,11 +119,11 @@ export class UserService {
           },
         },
       },
-    });
+    })
 
-    if (!user) throw new NotFoundException('user_not_found');
+    if (!user) throw new NotFoundException('user_not_found')
 
-    return user;
+    return user
   }
 
   async findOneById(id: string): Promise<UserWithoutPassword> {
@@ -131,11 +131,11 @@ export class UserService {
       where: {
         id,
       },
-    });
+    })
 
-    if (!user) throw new NotFoundException('user_not_found');
+    if (!user) throw new NotFoundException('user_not_found')
 
-    return user;
+    return user
   }
 
   async findOneByEmail(email: string) {
@@ -147,11 +147,11 @@ export class UserService {
         email: true,
         document: true,
       },
-    });
+    })
 
-    if (!user) return null;
+    if (!user) return null
 
-    return user;
+    return user
   }
 
   async findRoles(document: string) {
@@ -161,9 +161,9 @@ export class UserService {
           document: document,
         },
       },
-    });
+    })
 
-    return roles;
+    return roles
   }
 
   async updatePasswordByDocument(
@@ -179,20 +179,20 @@ export class UserService {
         where: {
           document: document,
         },
-      });
+      })
 
       await context.verificationToken.delete({
         where: {
           token,
         },
-      });
-    });
+      })
+    })
 
     return {
       message: 'resource_updated',
       error: null,
       statusCode: HttpStatus.OK,
-    };
+    }
   }
 
   async activeAccountByDocument(document: string, token: string) {
@@ -205,7 +205,7 @@ export class UserService {
           where: {
             document: document,
           },
-        });
+        })
 
         await context.role.create({
           data: {
@@ -213,26 +213,26 @@ export class UserService {
             description: 'Perfil de usuário comum',
             userId: user.id,
           },
-        });
+        })
 
         await context.verificationToken.delete({
           where: {
             token,
           },
-        });
-      });
+        })
+      })
 
       return {
         message: 'resource_updated',
         error: null,
         statusCode: HttpStatus.OK,
-      };
+      }
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error)
     }
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return `This action removes a #${id} user`
   }
 }

@@ -1,4 +1,4 @@
-import { Transform } from 'class-transformer';
+import { Transform } from 'class-transformer'
 import {
   IsEnum,
   IsNotEmpty,
@@ -6,11 +6,11 @@ import {
   IsString,
   Length,
   Validate,
-} from 'class-validator';
-import { PaymentReceivingOption } from 'src/enums/payment-method.enum';
-import { transformToDecimal } from 'src/utils/transform-decimal.util';
-import { IsTypeAnnouncementString } from 'src/validators/type-announcement.validator';
-import { IsCPFValid } from 'src/validators/valid-cpf.validator';
+} from 'class-validator'
+import { PaymentReceivingOption } from 'src/enums/payment-method.enum'
+import { transformToDecimal } from 'src/utils/transform-decimal.util'
+import { IsTypeAnnouncementString } from 'src/validators/type-announcement.validator'
+import { IsCPFValid } from 'src/validators/valid-cpf.validator'
 
 export class CreateAnnouncementCommandRequest {
   @IsNotEmpty()
@@ -18,57 +18,57 @@ export class CreateAnnouncementCommandRequest {
     message:
       'Valor inválido. A propriedade type deve ser "RPV" ou "PRECATORIO"',
   })
-  type: string;
+  type: string
 
   @Length(3, 200)
-  ownerFullName: string;
+  ownerFullName: string
 
   @IsNotEmpty()
   @Validate(IsCPFValid)
-  ownerDocument: string;
+  ownerDocument: string
 
   @IsNotEmpty()
-  lawSuit: string;
+  lawSuit: string
 
   @IsNotEmpty()
-  origin: string;
+  origin: string
 
   @IsNotEmpty()
-  court: string;
+  court: string
 
   @IsNotEmpty()
   @Transform(({ value }) => transformToDecimal(value))
-  price: string;
+  price: string
 
   @Transform(({ value }) => transformToDecimal(value))
   @IsNotEmpty()
-  salePrice: string;
+  salePrice: string
 
   @Transform(({ value }) => transformToDecimal(value))
   @IsNotEmpty()
-  liquidBalance: string;
+  liquidBalance: string
 
   @IsNotEmpty()
   @IsEnum(PaymentReceivingOption)
-  paymentOption: PaymentReceivingOption;
+  paymentOption: PaymentReceivingOption
 
   @IsString()
   @IsOptional()
-  pixKey?: string;
+  pixKey?: string
 
   @Length(3, 200)
   @IsOptional()
-  ownerBankAccount?: string;
+  ownerBankAccount?: string
 
   @IsString()
   @IsOptional()
-  documentBankAccount?: string;
+  documentBankAccount?: string
 
   @IsString()
   @IsOptional()
-  bankAccount?: string;
+  bankAccount?: string
 
   @IsString()
   @IsOptional()
-  agencyBankAccount: string;
+  agencyBankAccount: string
 }

@@ -3,16 +3,16 @@ import {
   ValidationArguments,
   ValidationOptions,
   ValidatorConstraintInterface,
-} from 'class-validator';
-import { isCPFValid } from 'src/utils/is-cpf-valid.util';
+} from 'class-validator'
+import { isCPFValid } from 'src/utils/is-cpf-valid.util'
 
 export class ValidCpfValidator implements ValidatorConstraintInterface {
   validate(value: string): Promise<boolean> | boolean {
-    return isCPFValid(value);
+    return isCPFValid(value)
   }
 
   defaultMessage(args?: ValidationArguments): string {
-    return `A propriedade ${args?.property} deve ser um CPF válido`;
+    return `A propriedade ${args?.property} deve ser um CPF válido`
   }
 }
 
@@ -24,6 +24,6 @@ export function IsCPFValid(validationOptions?: ValidationOptions) {
       options: validationOptions,
       constraints: [],
       validator: IsCPFValid,
-    });
-  };
+    })
+  }
 }

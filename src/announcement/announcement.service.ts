@@ -4,14 +4,14 @@ import {
   Injectable,
   Scope,
   UnauthorizedException,
-} from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { CreateAnnouncementCommandRequest } from 'src/announcement/requests/create-announcement-command.request';
-import { CreateAnnouncementCommandResponse } from 'src/announcement/responses/create-announcement-command.response';
-import { AuthService } from 'src/auth/auth.service';
-import { Code } from 'src/operation-result/code.enum';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { UserService } from 'src/user/user.service';
+} from '@nestjs/common'
+import { REQUEST } from '@nestjs/core'
+import { CreateAnnouncementCommandRequest } from 'src/announcement/requests/create-announcement-command.request'
+import { CreateAnnouncementCommandResponse } from 'src/announcement/responses/create-announcement-command.response'
+import { AuthService } from 'src/auth/auth.service'
+import { Code } from 'src/operation-result/code.enum'
+import { PrismaService } from 'src/prisma/prisma.service'
+import { UserService } from 'src/user/user.service'
 
 @Injectable({ scope: Scope.REQUEST })
 export class AnnouncementService {
@@ -24,7 +24,7 @@ export class AnnouncementService {
   async create(
     request: CreateAnnouncementCommandRequest,
   ): Promise<CreateAnnouncementCommandResponse> {
-    const userId: string = await this._getLoggedUserId();
+    const userId: string = await this._getLoggedUserId()
 
     try {
       const createAnnouncement = await this.prismaService.announcement.create({
@@ -53,19 +53,19 @@ export class AnnouncementService {
           id: true,
           createdAt: true,
         },
-      });
+      })
 
       const response: CreateAnnouncementCommandResponse = {
         message: 'resource_created',
         statusCode: Code.Created,
         success: true,
         data: createAnnouncement,
-      };
+      }
 
-      return response;
+      return response
     } catch (err) {
-      console.error(err);
-      throw new BadRequestException(err);
+      console.error(err)
+      throw new BadRequestException(err)
     }
   }
 
@@ -74,25 +74,25 @@ export class AnnouncementService {
       where: {
         deletedAt: null,
       },
-    });
+    })
 
-    return announcements;
+    return announcements
   }
 
   // async findOne(id: string) {}
 
   private async _getLoggedUserId(): Promise<string> {
     if (!this.request.headers['authorization'])
-      throw new UnauthorizedException('token_is_missing');
+      throw new UnauthorizedException('token_is_missing')
 
-    const token: string = this.request.headers['authorization'].split(' ')[1];
+    const token: string = this.request.headers['authorization'].split(' ')[1]
 
-    const result = await this.authService.verify(token);
+    const result = await this.authService.verify(token)
 
-    return (await this.userService.findOne(result.payload.document)).id;
+    return (await this.userService.findOne(result.payload.document)).id
   }
 
   private async formatterDecimalString(value: string) {
-    return value.replace(',', '.');
+    return value.replace(',', '.')
   }
 }

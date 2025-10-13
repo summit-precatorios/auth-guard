@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { UserModule } from 'src/user/user.module';
-import { UserService } from 'src/user/user.service';
-import { AuthService } from './auth.service';
-import { JwtContansts } from './constants';
+import { Module } from '@nestjs/common'
+import { APP_GUARD } from '@nestjs/core'
+import { JwtModule } from '@nestjs/jwt'
+import { AuthController } from 'src/auth/auth.controller'
+import { AuthGuard } from 'src/guard/auth.guard'
+import { PrismaModule } from 'src/prisma/prisma.module'
+import { UserModule } from 'src/user/user.module'
+import { UserService } from 'src/user/user.service'
+import { AuthService } from './auth.service'
+import { JwtContansts } from './constants'
 
 @Module({
   imports: [
@@ -20,6 +23,14 @@ import { JwtContansts } from './constants';
       },
     }),
   ],
-  providers: [UserService, AuthService],
+  controllers: [AuthController],
+  providers: [
+    UserService,
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AuthModule {}

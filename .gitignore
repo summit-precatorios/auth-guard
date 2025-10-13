@@ -47,6 +47,7 @@ lerna-debug.log*
 # temp directory
 .temp
 .tmp
+prisma/generated
 
 # Runtime data
 pids

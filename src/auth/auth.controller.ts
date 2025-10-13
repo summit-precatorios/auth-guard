@@ -1,12 +1,12 @@
-import { Body, Controller, Patch, Post } from '@nestjs/common';
-import { Public } from 'src/decorators/public.decorator';
-import { AuthService } from './auth.service';
-import { AuthRegisterCommand } from './commands/auth-register.command';
-import { AuthSignInCommand } from './commands/auth-sign-in.command';
-import { AuthActivatorAccountRequest } from './requests/auth-activator-account.request';
-import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
-import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
-import { AuthVerifyAccountByDocumentRequest } from 'src/auth/requests/auth-verify-account-by-document.request';
+import { Body, Controller, Patch, Post } from '@nestjs/common'
+import { AuthVerifyAccountByDocumentRequest } from 'src/auth/requests/auth-verify-account-by-document.request'
+import { Public } from 'src/decorators/public.decorator'
+import { AuthService } from './auth.service'
+import { AuthRegisterCommand } from './commands/auth-register.command'
+import { AuthSignInCommand } from './commands/auth-sign-in.command'
+import { AuthActivatorAccountRequest } from './requests/auth-activator-account.request'
+import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request'
+import { AuthResetPasswordRequest } from './requests/auth-reset-password.request'
 
 @Controller('auth')
 export class AuthController {
@@ -15,30 +15,30 @@ export class AuthController {
   @Public()
   @Post('signin')
   async signin(@Body() command: AuthSignInCommand) {
-    return this.authService.signIn(command);
+    return this.authService.signIn(command)
   }
 
   @Public()
   @Post('register')
   async register(@Body() command: AuthRegisterCommand) {
-    return this.authService.register(command);
+    return this.authService.register(command)
   }
 
   @Public()
   @Post('recovery/request')
   async recoveryPasswordRequest(@Body() request: AuthRecoveryPasswordRequest) {
-    return this.authService.recoveryPasswordRequest(request);
+    return this.authService.recoveryPasswordRequest(request)
   }
   @Public()
   @Patch('reset/password')
   async resetPassword(@Body() request: AuthResetPasswordRequest) {
-    return this.authService.resetPassword(request);
+    return this.authService.resetPassword(request)
   }
 
   @Public()
   @Patch('active/account')
   async activeAccount(@Body() request: AuthActivatorAccountRequest) {
-    return this.authService.activeAccount(request);
+    return this.authService.activeAccount(request)
   }
 
   @Public()
@@ -46,6 +46,6 @@ export class AuthController {
   async verifyAccountByDocument(
     @Body() request: AuthVerifyAccountByDocumentRequest,
   ) {
-    return this.authService.verifyAccountByDocument(request);
+    return this.authService.verifyAccountByDocument(request)
   }
 }

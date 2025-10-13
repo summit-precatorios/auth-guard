@@ -4,20 +4,20 @@ import {
   IsNumberString,
   IsString,
   Length,
-} from 'class-validator';
+} from 'class-validator'
 
 export class AuthRegisterCommand {
   @IsNumberString()
   @Length(11, 11)
-  document: string;
+  document: string
 
   @IsEmail()
-  email: string;
+  email: string
 
   @IsString()
   @IsNotEmpty()
-  password: string;
+  password: string
 
   @IsString()
-  fullName: string;
+  fullName: string
 }

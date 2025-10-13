@@ -1,5 +1,5 @@
-import { INotificationSchema } from './notification-schema.interface';
+import { INotificationSchema } from './notification-schema.interface'
 
 export interface INotificationStrategy {
-  sendNotification(schema: INotificationSchema): void;
+  sendNotification(schema: INotificationSchema): void
 }
