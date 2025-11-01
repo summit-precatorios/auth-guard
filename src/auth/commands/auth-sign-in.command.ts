@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsNumberString, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsString } from 'class-validator'
 
 export class AuthSignInCommand {
   @IsNumberString()
   @IsNotEmpty()
-  readonly document: string;
+  readonly document: string
 
   @IsString()
   @IsNotEmpty()
-  readonly password: string;
+  readonly password: string
 }

@@ -3,19 +3,19 @@ import {
   ValidationArguments,
   ValidationOptions,
   ValidatorConstraintInterface,
-} from 'class-validator';
+} from 'class-validator'
 
 export class TypeAnnouncementValidator implements ValidatorConstraintInterface {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validate(value: any, args?: ValidationArguments): Promise<boolean> | boolean {
-    const allowedValues = ['RPV', 'PRECATORIO'];
+    const allowedValues = ['RPV', 'PRECATORIO']
 
-    return typeof value === 'string' && allowedValues.includes(value);
+    return typeof value === 'string' && allowedValues.includes(value)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   defaultMessage(args?: ValidationArguments): string {
-    return "O valor deve ser 'RPV' ou 'PRECATORIO'";
+    return "O valor deve ser 'RPV' ou 'PRECATORIO'"
   }
 }
 
@@ -29,6 +29,6 @@ export function IsTypeAnnouncementString(
       options: validationOptions,
       constraints: [],
       validator: IsTypeAnnouncementString,
-    });
-  };
+    })
+  }
 }

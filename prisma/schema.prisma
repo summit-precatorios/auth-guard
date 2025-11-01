@@ -1,13 +1,13 @@
 generator client {
+  output          = "generated"
   provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions", "multiSchema"]
+  previewFeatures = ["postgresqlExtensions"]
   extensions      = [uuidOssp(map: "uuid-ossp")]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["public", "auth"]
 }
 
 // auth models
@@ -29,7 +29,6 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@map("account")
-  @@schema("auth")
 }
 
 model Session {
@@ -40,7 +39,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("session")
-  @@schema("auth")
 }
 
 model User {
@@ -60,7 +58,6 @@ model User {
   account       Account?
 
   @@map("user")
-  @@schema("public")
 }
 
 model VerificationToken {
@@ -71,7 +68,6 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_token")
-  @@schema("auth")
 }
 
 model Role {
@@ -82,7 +78,6 @@ model Role {
   user        User?   @relation(fields: [userId], references: [id])
 
   @@map("role")
-  @@schema("auth")
 }
 
 // announcement models
@@ -91,8 +86,6 @@ enum AnnouncementStatus {
   APROVED
   PENDENT
   REPROVED
-
-  @@schema("public")
 }
 
 model Announcement {
@@ -122,5 +115,4 @@ model Announcement {
   deletedAt DateTime?          @db.Timestamp()
 
   @@map("announcement")
-  @@schema("public")
 }

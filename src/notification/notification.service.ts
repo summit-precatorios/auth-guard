@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { INotificationSchema } from 'src/strategy/interfaces/notification-schema.interface';
-import { NotificationStrategyService } from 'src/strategy/notification/notification.strategy.service';
+import { Injectable } from '@nestjs/common'
+import { INotificationSchema } from 'src/strategy/interfaces/notification-schema.interface'
+import { NotificationStrategyService } from 'src/strategy/notification/notification.strategy.service'
 
 @Injectable()
 export class NotificationService extends NotificationStrategyService {
@@ -14,9 +14,9 @@ export class NotificationService extends NotificationStrategyService {
         appName: 'Summit Precatórios',
         senderName: 'Equipe Summit',
       },
-    };
+    }
 
-    await this.sendNotification(schema);
+    await this.sendNotification(schema)
   }
 
   async sendCreatedAccountNotification(
@@ -35,8 +35,8 @@ export class NotificationService extends NotificationStrategyService {
         supportEmail: 'summitprecatorios@gmail.com',
         senderName: 'Equipe Summit',
       },
-    };
-    await this.sendNotification(schema);
+    }
+    await this.sendNotification(schema)
   }
 
   async sendVerifyAcountNotification(
@@ -57,8 +57,8 @@ export class NotificationService extends NotificationStrategyService {
         supportEmail: 'summitprecatorios@gmail.com',
         senderName: 'Equipe Summit',
       },
-    };
+    }
 
-    await this.sendNotification(schema);
+    await this.sendNotification(schema)
   }
 }

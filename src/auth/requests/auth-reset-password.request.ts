@@ -1,9 +1,9 @@
-import { IsJWT, Length } from 'class-validator';
+import { IsJWT, Length } from 'class-validator'
 
 export class AuthResetPasswordRequest {
   @IsJWT()
-  token: string;
+  token: string
 
   @Length(8)
-  password: string;
+  password: string
 }

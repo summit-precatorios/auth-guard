@@ -1,12 +1,12 @@
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common'
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule)
 
-  app.setGlobalPrefix('api');
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.setGlobalPrefix('api')
+  app.useGlobalPipes(new ValidationPipe({ transform: true }))
 
   app.enableCors({
     origin: [
@@ -15,8 +15,8 @@ async function bootstrap() {
       'https://www.summitprecatorios.com.br',
     ],
     methods: ['GET', 'POST', 'UPDATE', 'PATCH'],
-  });
+  })
 
-  await app.listen(4004);
+  await app.listen(4004)
 }
-bootstrap();
+bootstrap()

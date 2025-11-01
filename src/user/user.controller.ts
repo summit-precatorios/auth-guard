@@ -1,7 +1,7 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { Role, Roles } from 'src/decorators/roles.decorator';
-import { AuthGuard } from 'src/guard/auth.guard';
-import { UserService } from './user.service';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common'
+import { Role, Roles } from 'src/decorators/roles.decorator'
+import { AuthGuard } from 'src/guard/auth.guard'
+import { UserService } from './user.service'
 
 @Controller('user')
 export class UserController {
@@ -11,13 +11,13 @@ export class UserController {
   @Roles(Role.User)
   @Get()
   findAll() {
-    return this.userService.findAll();
+    return this.userService.findAll()
   }
 
   @UseGuards(AuthGuard)
   @Roles(Role.User)
   @Get('announcements/:document')
   getAnnouncementsById(@Param('document') id: string) {
-    return this.userService.findAnnouncementsById(id);
+    return this.userService.findAnnouncementsById(id)
   }
 }

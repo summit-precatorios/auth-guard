@@ -1,8 +1,8 @@
 export class AuthJwtSignCommand {
-  name: string;
-  email: string;
-  document: string;
-  image?: string | null;
-  roles?: Array<string>;
-  isActive: boolean;
+  name: string
+  email: string
+  document: string
+  image?: string | null
+  roles?: Array<string>
+  isActive: boolean
 }

@@ -1,7 +1,7 @@
-import { MailerService } from '@nestjs-modules/mailer';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { INotificationSchema } from '../interfaces/notification-schema.interface';
-import { INotificationStrategy } from '../interfaces/notification-strategy.interface';
+import { MailerService } from '@nestjs-modules/mailer'
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { INotificationSchema } from '../interfaces/notification-schema.interface'
+import { INotificationStrategy } from '../interfaces/notification-strategy.interface'
 @Injectable()
 export abstract class NotificationStrategyService
   implements INotificationStrategy
@@ -14,10 +14,10 @@ export abstract class NotificationStrategyService
         to: schema.user.email,
         template: schema.template,
         context: schema.context,
-      });
+      })
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException(error);
+      console.error(error)
+      throw new BadRequestException(error)
     }
   }
 }

@@ -4,5 +4,4 @@
         "source.organizeImports": "explicit",
         "source.removeUnusedImports": "explicit"
     },
-    "eslint.validate": ["javascript"]
 }

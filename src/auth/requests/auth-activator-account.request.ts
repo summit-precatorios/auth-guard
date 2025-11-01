@@ -1,6 +1,6 @@
-import { IsJWT } from 'class-validator';
+import { IsJWT } from 'class-validator'
 
 export class AuthActivatorAccountRequest {
   @IsJWT()
-  token: string;
+  token: string
 }

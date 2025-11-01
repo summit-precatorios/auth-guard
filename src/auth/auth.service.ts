@@ -6,47 +6,47 @@ import {
   Logger,
   NotFoundException,
   UnauthorizedException,
-} from '@nestjs/common';
+} from '@nestjs/common'
 
-import { JwtService, TokenExpiredError } from '@nestjs/jwt';
-import { compare, genSalt, hash } from 'bcrypt';
-import { AuthVerifyAccountByDocumentRequest } from 'src/auth/requests/auth-verify-account-by-document.request';
-import { Role } from 'src/decorators/roles.decorator';
-import { NotificationService } from 'src/notification/notification.service';
-import { Code } from 'src/operation-result/code.enum';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserCommandResponse } from 'src/user/responses/create-user-command.response';
-import { UserService } from 'src/user/user.service';
-import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command';
-import { AuthRegisterCommand } from './commands/auth-register.command';
-import { AuthSignInCommand } from './commands/auth-sign-in.command';
-import { JwtContansts, Token } from './constants';
-import { AuthActivatorAccountRequest } from './requests/auth-activator-account.request';
-import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request';
-import { AuthResetPasswordRequest } from './requests/auth-reset-password.request';
-import { AuthRecoveryPasswordResponse } from './responses/auth-recovery-password.response';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt'
+import { compare, genSalt, hash } from 'bcrypt'
+import { AuthVerifyAccountByDocumentRequest } from 'src/auth/requests/auth-verify-account-by-document.request'
+import { Role } from 'src/decorators/roles.decorator'
+import { NotificationService } from 'src/notification/notification.service'
+import { Code } from 'src/operation-result/code.enum'
+import { PrismaService } from 'src/prisma/prisma.service'
+import { CreateUserCommandResponse } from 'src/user/responses/create-user-command.response'
+import { UserService } from 'src/user/user.service'
+import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command'
+import { AuthRegisterCommand } from './commands/auth-register.command'
+import { AuthSignInCommand } from './commands/auth-sign-in.command'
+import { JwtContansts, Token } from './constants'
+import { AuthActivatorAccountRequest } from './requests/auth-activator-account.request'
+import { AuthRecoveryPasswordRequest } from './requests/auth-recovery-password.request'
+import { AuthResetPasswordRequest } from './requests/auth-reset-password.request'
+import { AuthRecoveryPasswordResponse } from './responses/auth-recovery-password.response'
 
 interface jwtDataPayload {
   payload: {
-    document: string;
-    email: string;
-    fistName: string;
-    lastName: string;
-    image: string | null;
-  };
-  roles: Array<string>;
+    document: string
+    email: string
+    fistName: string
+    lastName: string
+    image: string | null
+  }
+  roles: Array<string>
 }
 
 interface IRole {
-  name: string;
-  id: string;
-  userId: string | null;
-  description: string | null;
+  name: string
+  id: string
+  userId: string | null
+  description: string | null
 }
 
 @Injectable()
 export class AuthService {
-  private readonly _logger = new Logger(AuthService.name);
+  private readonly _logger = new Logger(AuthService.name)
 
   constructor(
     private readonly userService: UserService,
@@ -58,20 +58,20 @@ export class AuthService {
     const enrichmentCommand: AuthRegisterCommand = {
       ...command,
       password: await this.encrypt(command.password),
-    };
+    }
 
-    const createUser = await this.userService.create(enrichmentCommand);
+    const createUser = await this.userService.create(enrichmentCommand)
 
     if (createUser.success) {
       const activationToken = await this.generateActivationToken(
         command.document,
-      );
+      )
 
       await this.notificationService.sendCreatedAccountNotification(
         command.email,
         command.fullName,
         activationToken ?? '',
-      );
+      )
     }
 
     const response: CreateUserCommandResponse = {
@@ -79,19 +79,19 @@ export class AuthService {
       statusCode: createUser.statusCode,
       success: createUser.success,
       data: createUser.data,
-    };
+    }
 
-    this._logger.log(response.message);
+    this._logger.log(response.message)
 
-    return response;
+    return response
   }
 
   async signIn(command: AuthSignInCommand): Promise<{ accessToken: string }> {
     try {
-      const user = await this.userService.findOne(command.document);
+      const user = await this.userService.findOne(command.document)
 
       if (!(await compare(command.password, user.password)))
-        throw new UnauthorizedException('invalid_credentials');
+        throw new UnauthorizedException('invalid_credentials')
 
       const payload: AuthJwtSignCommand = {
         document: user.document,
@@ -99,11 +99,11 @@ export class AuthService {
         name: user.name,
         image: user.image,
         isActive: user.isActive,
-      };
+      }
 
-      return this.providerAccessToken(payload);
+      return this.providerAccessToken(payload)
     } catch (e) {
-      throw new UnauthorizedException('invalid_credentials');
+      throw new UnauthorizedException('invalid_credentials')
     }
   }
 
@@ -116,7 +116,7 @@ export class AuthService {
   // }
 
   async recoveryPasswordRequest(command: AuthRecoveryPasswordRequest) {
-    const user = await this.userService.findOneByEmail(command.email);
+    const user = await this.userService.findOneByEmail(command.email)
 
     if (user) {
       try {
@@ -135,92 +135,92 @@ export class AuthService {
             identifier: user.document,
             issuer: Token.RecoveryPassword,
           },
-        });
+        })
 
         await this.notificationService.sendRecoveryPasswordNotification(
           user.email,
           verification.token,
-        );
+        )
 
         const response: AuthRecoveryPasswordResponse = {
           message: 'password recovery notification sent',
           statusCode: Code.Created,
           success: true,
           data: null,
-        };
+        }
 
-        return response;
+        return response
       } catch (error) {
-        throw new BadRequestException(error);
+        throw new BadRequestException(error)
       }
     }
 
-    throw new BadRequestException();
+    throw new BadRequestException()
   }
 
   async resetPassword(request: AuthResetPasswordRequest) {
-    const isValidToken = await this.verify(request.token);
+    const isValidToken = await this.verify(request.token)
 
     if (!isValidToken)
-      throw new BadRequestException('Token de redifinição de senha inválido');
+      throw new BadRequestException('Token de redifinição de senha inválido')
 
-    const payload = this.jwtService.decode(request.token);
+    const payload = this.jwtService.decode(request.token)
 
     const enrichmentRequest = {
       password: await this.encrypt(request.password),
-    };
+    }
 
     return await this.userService.updatePasswordByDocument(
       payload.user.document,
       enrichmentRequest.password,
       request.token,
-    );
+    )
   }
 
   async activeAccount(request: AuthActivatorAccountRequest) {
-    const isValidToken = await this.verify(request.token);
+    const isValidToken = await this.verify(request.token)
 
-    if (!isValidToken) throw new BadRequestException('invalid_token');
+    if (!isValidToken) throw new BadRequestException('invalid_token')
 
-    const payload = await this.jwtService.decode(request.token);
+    const payload = await this.jwtService.decode(request.token)
 
     if (payload?.role !== Role.AccountActivator)
-      throw new ForbiddenException('access_denied');
+      throw new ForbiddenException('access_denied')
 
-    const user = this.userService.findOne(payload.document);
+    const user = this.userService.findOne(payload.document)
 
-    if (!user) throw new NotFoundException('account_not_found');
+    if (!user) throw new NotFoundException('account_not_found')
 
     return await this.userService.activeAccountByDocument(
       payload.document,
       request.token,
-    );
+    )
   }
 
   async verifyAccountByDocument(request: AuthVerifyAccountByDocumentRequest) {
-    const { document } = request;
+    const { document } = request
 
-    const user = await this.userService.findOne(document);
+    const user = await this.userService.findOne(document)
 
     if (user && !user.isActive) {
-      const activationToken = await this.generateActivationToken(document);
+      const activationToken = await this.generateActivationToken(document)
 
       await this.notificationService.sendVerifyAcountNotification(
         user.email,
         user.name,
         activationToken ?? '',
-      );
+      )
 
       const response = {
         message: 'resource_updated!',
         statusCode: Code.Ok,
         success: true,
-      };
+      }
 
-      return response;
+      return response
     }
 
-    throw new ConflictException('user_already_active');
+    throw new ConflictException('user_already_active')
   }
 
   // TODO - refatorar e atribuir esta função ao JwtServices
@@ -228,15 +228,15 @@ export class AuthService {
     try {
       const payload: jwtDataPayload = await this.jwtService.verify(token, {
         secret: JwtContansts.secret,
-      });
+      })
 
-      return payload;
+      return payload
     } catch (error) {
       if (error instanceof TokenExpiredError) {
-        throw new UnauthorizedException('expired_token');
+        throw new UnauthorizedException('expired_token')
       }
 
-      throw new UnauthorizedException('invalid_token', { cause: error });
+      throw new UnauthorizedException('invalid_token', { cause: error })
     }
   }
 
@@ -244,16 +244,16 @@ export class AuthService {
   private async providerAccessToken(
     payload: AuthJwtSignCommand,
   ): Promise<{ accessToken: string }> {
-    const roles = await this.userService.findRoles(payload.document);
+    const roles = await this.userService.findRoles(payload.document)
 
     return {
       accessToken: await this.jwtService.signAsync({
         payload,
         roles: roles.map((role: IRole) => {
-          return role.name;
+          return role.name
         }),
       }),
-    };
+    }
   }
 
   // TODO - refatorar e atribuir esta função ao JwtServices
@@ -273,18 +273,18 @@ export class AuthService {
             identifier: document,
             issuer: Token.ActivationAccount,
           },
-        });
+        })
 
-      return verificationToken.token;
+      return verificationToken.token
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error)
     }
   }
 
   private async encrypt(password: string) {
-    const SALT = await genSalt();
-    const encryptedPassword = await hash(password, SALT);
+    const SALT = await genSalt()
+    const encryptedPassword = await hash(password, SALT)
 
-    return encryptedPassword;
+    return encryptedPassword
   }
 }
