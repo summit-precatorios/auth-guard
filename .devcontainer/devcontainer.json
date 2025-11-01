@@ -7,10 +7,10 @@
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {},
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
-		"ghcr.io/devcontainers-contrib/features/nestjs-cli:2": {},
-		"ghcr.io/devcontainers-contrib/features/prisma:2": {},
-		"ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {},
-		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+		"ghcr.io/devcontainers-extra/features/nestjs-cli": {},
+		"ghcr.io/devcontainers-extra/features/prisma": {},
+		"ghcr.io/devcontainers-extra/features/zsh-plugins": {},
+		"ghcr.io/stuartleeks/dev-container-features/shell-history": {},
 		"ghcr.io/devcontainers/features/github-cli": {}
 	},
 	// Features to add to the dev container. More info: https://containers.dev/features.
@@ -23,22 +23,18 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"piotrpalarz.vscode-gitignore-generator",
 				"Prisma.prisma",
 				"Prisma.prisma-insider",
-				"cweijan.vscode-database-client2",
-				"Jannchie.codetime"
+				"cweijan.vscode-database-client2"
 			]
 		}
 	},
 	"mounts": [
 		"type=bind,source=${localEnv:HOME}/.ssh/,target=/home/node/.ssh/,readonly"
 	],
-
 	"containerEnv": {
 		"TZ": "America/Sao_Paulo"
-	},
-
+	}
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	"remoteUser": "root"
+	//"remoteUser": "root"
 }
