@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
-import { AuthService } from 'src/auth/auth.service'
-import { NotificationService } from 'src/notification/notification.service'
+import { AuthService } from 'src/modules/auth/auth.service'
+import { NotificationService } from 'src/modules/notification/notification.service'
+import { PrismaModule } from 'src/modules/prisma/prisma.module'
 import { OperationResultService } from 'src/operation-result/operation-result.service'
-import { PrismaModule } from 'src/prisma/prisma.module'
 import { UserController } from './user.controller'
 import { UserService } from './user.service'
 

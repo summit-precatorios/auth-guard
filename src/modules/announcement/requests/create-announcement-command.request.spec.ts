@@ -1,5 +1,5 @@
 import { validate } from 'class-validator'
-import { CreateAnnouncementCommandRequest } from 'src/announcement/requests/create-announcement-command.request'
+import { CreateAnnouncementCommandRequest } from 'src/modules/announcement/requests/create-announcement-command.request'
 
 describe('AnnouncementCreateRequest', () => {
   it('should validate type as "RPV" or "PRECATORIO"', async () => {

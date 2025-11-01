@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
-import { AnnouncementService } from 'src/announcement/announcement.service'
-import { CreateAnnouncementCommandRequest } from 'src/announcement/requests/create-announcement-command.request'
 import { Role, Roles } from 'src/decorators/roles.decorator'
 import { AuthGuard } from 'src/guard/auth.guard'
+import { AnnouncementService } from 'src/modules/announcement/announcement.service'
+import { CreateAnnouncementCommandRequest } from 'src/modules/announcement/requests/create-announcement-command.request'
 
 @UseGuards(AuthGuard)
 @Controller('announcement')

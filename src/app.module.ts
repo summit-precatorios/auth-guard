@@ -2,11 +2,11 @@ import { MailerModule } from '@nestjs-modules/mailer'
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { AnnouncementModule } from './announcement/announcement.module'
-import { AuthModule } from './auth/auth.module'
 import { ApiKeyMiddleware } from './middlewares/api-key.middleware'
-import { PrismaModule } from './prisma/prisma.module'
-import { UserModule } from './user/user.module'
+import { AnnouncementModule } from './modules/announcement/announcement.module'
+import { AuthModule } from './modules/auth/auth.module'
+import { PrismaModule } from './modules/prisma/prisma.module'
+import { UserModule } from './modules/user/user.module'
 
 @Module({
   imports: [

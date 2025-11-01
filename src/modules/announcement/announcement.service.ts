@@ -6,12 +6,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common'
 import { REQUEST } from '@nestjs/core'
-import { CreateAnnouncementCommandRequest } from 'src/announcement/requests/create-announcement-command.request'
-import { CreateAnnouncementCommandResponse } from 'src/announcement/responses/create-announcement-command.response'
-import { AuthService } from 'src/auth/auth.service'
+import { CreateAnnouncementCommandRequest } from 'src/modules/announcement/requests/create-announcement-command.request'
+import { CreateAnnouncementCommandResponse } from 'src/modules/announcement/responses/create-announcement-command.response'
+import { AuthService } from 'src/modules/auth/auth.service'
+import { PrismaService } from 'src/modules/prisma/prisma.service'
+import { UserService } from 'src/modules/user/user.service'
 import { Code } from 'src/operation-result/code.enum'
-import { PrismaService } from 'src/prisma/prisma.service'
-import { UserService } from 'src/user/user.service'
 
 @Injectable({ scope: Scope.REQUEST })
 export class AnnouncementService {

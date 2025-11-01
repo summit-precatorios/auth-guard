@@ -1,6 +1,6 @@
 import { Body, Controller, Patch, Post } from '@nestjs/common'
-import { AuthVerifyAccountByDocumentRequest } from 'src/auth/requests/auth-verify-account-by-document.request'
 import { Public } from 'src/decorators/public.decorator'
+import { AuthVerifyAccountByDocumentRequest } from 'src/modules/auth/requests/auth-verify-account-by-document.request'
 import { AuthService } from './auth.service'
 import { AuthRegisterCommand } from './commands/auth-register.command'
 import { AuthSignInCommand } from './commands/auth-sign-in.command'

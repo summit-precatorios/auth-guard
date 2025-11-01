@@ -8,12 +8,12 @@ import {
 } from '@nestjs/common'
 import { User } from '@prisma/client'
 import { Role } from 'src/decorators/roles.decorator'
+import { PrismaService } from 'src/modules/prisma/prisma.service'
 import { Code } from 'src/operation-result/code.enum'
-import { PrismaService } from 'src/prisma/prisma.service'
 import { CreateUserCommandRequest } from './requests/create-user-command.request'
 import { CreateUserCommandResponse } from './responses/create-user-command.response'
 
-type UserWithoutPassword = Omit<User, 'password'>
+type UserResponse = Omit<User, 'password'>
 
 @Injectable()
 export class UserService {
@@ -126,7 +126,7 @@ export class UserService {
     return user
   }
 
-  async findOneById(id: string): Promise<UserWithoutPassword> {
+  async findOneById(id: string): Promise<UserResponse> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id,
