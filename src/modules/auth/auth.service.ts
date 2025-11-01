@@ -1,22 +1,22 @@
 import {
-  BadRequestException,
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
+    BadRequestException,
+    ConflictException,
+    ForbiddenException,
+    Injectable,
+    Logger,
+    NotFoundException,
+    UnauthorizedException,
 } from '@nestjs/common'
 
 import { JwtService, TokenExpiredError } from '@nestjs/jwt'
 import { compare, genSalt, hash } from 'bcrypt'
-import { Role } from 'src/decorators/roles.decorator'
+import { Role } from 'src/common/decorators/roles.decorator'
+import { Code } from 'src/common/operation-result/code.enum'
 import { AuthVerifyAccountByDocumentRequest } from 'src/modules/auth/requests/auth-verify-account-by-document.request'
 import { NotificationService } from 'src/modules/notification/notification.service'
 import { PrismaService } from 'src/modules/prisma/prisma.service'
 import { CreateUserCommandResponse } from 'src/modules/user/responses/create-user-command.response'
 import { UserService } from 'src/modules/user/user.service'
-import { Code } from 'src/operation-result/code.enum'
 import { AuthJwtSignCommand } from './commands/auth-jwt-sign.command'
 import { AuthRegisterCommand } from './commands/auth-register.command'
 import { AuthSignInCommand } from './commands/auth-sign-in.command'

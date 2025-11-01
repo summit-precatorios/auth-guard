@@ -1,10 +1,10 @@
 import {
-  registerDecorator,
-  ValidationArguments,
-  ValidationOptions,
-  ValidatorConstraintInterface,
+    registerDecorator,
+    ValidationArguments,
+    ValidationOptions,
+    ValidatorConstraintInterface,
 } from 'class-validator'
-import { isCPFValid } from 'src/utils/is-cpf-valid.util'
+import { isCPFValid } from 'src/common/utils/is-cpf-valid.util'
 
 export class ValidCpfValidator implements ValidatorConstraintInterface {
   validate(value: string): Promise<boolean> | boolean {

@@ -7,10 +7,10 @@ import {
   Length,
   Validate,
 } from 'class-validator'
-import { PaymentReceivingOption } from 'src/enums/payment-method.enum'
-import { transformToDecimal } from 'src/utils/transform-decimal.util'
-import { IsTypeAnnouncementString } from 'src/validators/type-announcement.validator'
-import { IsCPFValid } from 'src/validators/valid-cpf.validator'
+import { PaymentReceivingOption } from 'src/common/enums/payment-method.enum'
+import { transformToDecimal } from 'src/common/utils/transform-decimal.util'
+import { IsTypeAnnouncementString } from 'src/common/validators/type-announcement.validator'
+import { IsCPFValid } from 'src/common/validators/valid-cpf.validator'
 
 export class CreateAnnouncementCommandRequest {
   @IsNotEmpty()

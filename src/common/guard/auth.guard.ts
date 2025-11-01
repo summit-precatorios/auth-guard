@@ -1,13 +1,13 @@
 import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
+    CanActivate,
+    ExecutionContext,
+    Injectable,
+    UnauthorizedException,
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
-import { IS_PUBLIC_KEY } from 'src/decorators/public.decorator'
-import { Role, ROLES_KEY } from 'src/decorators/roles.decorator'
+import { IS_PUBLIC_KEY } from 'src/common/decorators/public.decorator'
+import { Role, ROLES_KEY } from 'src/common/decorators/roles.decorator'
 import { AuthService } from 'src/modules/auth/auth.service'
 
 @Injectable()

@@ -7,9 +7,9 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { User } from '@prisma/client'
-import { Role } from 'src/decorators/roles.decorator'
+import { Role } from 'src/common/decorators/roles.decorator'
+import { Code } from 'src/common/operation-result/code.enum'
 import { PrismaService } from 'src/modules/prisma/prisma.service'
-import { Code } from 'src/operation-result/code.enum'
 import { CreateUserCommandRequest } from './requests/create-user-command.request'
 import { CreateUserCommandResponse } from './responses/create-user-command.response'
 

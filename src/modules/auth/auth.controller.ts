@@ -1,5 +1,5 @@
 import { Body, Controller, Patch, Post } from '@nestjs/common'
-import { Public } from 'src/decorators/public.decorator'
+import { Public } from 'src/common/decorators/public.decorator'
 import { AuthVerifyAccountByDocumentRequest } from 'src/modules/auth/requests/auth-verify-account-by-document.request'
 import { AuthService } from './auth.service'
 import { AuthRegisterCommand } from './commands/auth-register.command'

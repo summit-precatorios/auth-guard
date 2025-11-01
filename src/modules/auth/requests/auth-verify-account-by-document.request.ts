@@ -1,5 +1,5 @@
 import { IsNotEmpty, Validate } from 'class-validator'
-import { isCPFValid } from 'src/utils/is-cpf-valid.util'
+import { isCPFValid } from 'src/common/utils/is-cpf-valid.util'
 
 export class AuthVerifyAccountByDocumentRequest {
   @IsNotEmpty()

@@ -1,4 +1,4 @@
-import { Code } from 'src/operation-result/code.enum'
+import { Code } from 'src/common/operation-result/code.enum'
 
 export class AuthRecoveryPasswordResponse {
   success: boolean
