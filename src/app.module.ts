@@ -2,6 +2,7 @@ import { MailerModule } from '@nestjs-modules/mailer'
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { join } from 'path'
 import { ApiKeyMiddleware } from './common/middleware/api-key.middleware'
 import { AnnouncementModule } from './modules/announcement/announcement.module'
 import { AuthModule } from './modules/auth/auth.module'
@@ -31,7 +32,7 @@ import { UserModule } from './modules/user/user.module'
       },
       preview: true,
       template: {
-        dir: __dirname + '/templates',
+        dir: join(__dirname, 'modules', 'emails', 'templates'),
         adapter: new EjsAdapter(),
         options: {
           strict: false,

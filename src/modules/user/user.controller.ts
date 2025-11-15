@@ -16,7 +16,7 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @Roles(Role.User)
-  @Get('announcements/:document')
+  @Get('announcement/:document')
   getAnnouncementsById(@Param('document') id: string) {
     return this.userService.findAnnouncementsById(id)
   }

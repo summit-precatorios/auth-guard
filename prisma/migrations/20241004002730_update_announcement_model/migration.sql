@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Announcement" ADD COLUMN     "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "deletedAt" TIMESTAMP;
