@@ -1,9 +1,9 @@
 import {
-    BadRequestException,
-    Inject,
-    Injectable,
-    Scope,
-    UnauthorizedException,
+  BadRequestException,
+  Inject,
+  Injectable,
+  Scope,
+  UnauthorizedException,
 } from '@nestjs/common'
 import { REQUEST } from '@nestjs/core'
 import { Code } from 'src/common/operation-result/code.enum'
@@ -79,6 +79,7 @@ export class AnnouncementService {
     return announcements
   }
 
+  // ! implement findOne
   // async findOne(id: string) {}
 
   private async _getLoggedUserId(): Promise<string> {
