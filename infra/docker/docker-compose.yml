@@ -1,6 +1,6 @@
 services:
-  summit-dev-postgres:
-    container_name: summit-dev-postgres
+  postgres:
+    container_name: postgres
     image: postgres:16
     restart: always
 

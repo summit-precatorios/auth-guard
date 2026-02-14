@@ -3,3 +3,4 @@ export function transformToDecimal(value: string): string {
 
   return value.replace(/\./g, '').replace(',', '.')
 }
+
