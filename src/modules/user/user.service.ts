@@ -7,6 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { User } from '@prisma/client'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { Role } from 'src/common/decorators/roles.decorator'
 import { Code } from 'src/common/operation-result/code.enum'
 import { PrismaService } from 'src/modules/prisma/prisma.service'
@@ -20,15 +21,30 @@ export class UserService {
   private readonly _logger = new Logger(UserService.name)
   constructor(private readonly prismaService: PrismaService) {}
 
+  private readonly CONFLICT_MESSAGE = 'Não foi possível processar sua solicitação.'
+
   async create(command: CreateUserCommandRequest) {
-    const user = await this.prismaService.user.findUnique({
+    const existingUser = await this.prismaService.user.findFirst({
       where: {
-        document: command.document,
+        OR: [
+          { document: command.document },
+          { email: command.email },
+        ],
       },
     })
 
-    if (!user) {
-      const user = await this.prismaService.user.create({
+    if (existingUser) {
+      this._logger.debug('account_create_failed', {
+        cause: existingUser.document === command.document
+          ? 'document already registered'
+          : 'email already registered',
+        statusCode: HttpStatus.CONFLICT,
+      })
+      throw new ConflictException(this.CONFLICT_MESSAGE)
+    }
+
+    try {
+      const createdUser = await this.prismaService.user.create({
         data: {
           document: command.document,
           email: command.email,
@@ -45,19 +61,24 @@ export class UserService {
         message: 'account_create_success',
         statusCode: Code.Created,
         success: true,
-        data: user,
+        data: createdUser,
       }
 
       return response
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        this._logger.debug('account_create_failed', {
+          cause: 'unique constraint violation',
+          meta: error.meta,
+          statusCode: HttpStatus.CONFLICT,
+        })
+        throw new ConflictException(this.CONFLICT_MESSAGE)
+      }
+      throw error
     }
-
-    this._logger.debug('account_create_failed', {
-      cause: `account: '${user.email}' already exist`,
-      error: 'Conflit',
-      statusCode: HttpStatus.CONFLICT,
-    })
-
-    throw new ConflictException('user_already_exist')
   }
 
   async findAll() {
