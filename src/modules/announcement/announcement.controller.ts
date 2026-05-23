@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
 import { Role, Roles } from 'src/common/decorators/roles.decorator'
+import { Public } from 'src/common/decorators/public.decorator'
 import { AuthGuard } from 'src/common/guard/auth.guard'
 import { AnnouncementService } from 'src/modules/announcement/announcement.service'
 import { CreateAnnouncementCommandRequest } from 'src/modules/announcement/requests/create-announcement-command.request'
+import { UpdateAnnouncementStatusRequest } from 'src/modules/announcement/requests/update-announcement-status.request'
 
 @UseGuards(AuthGuard)
 @Controller('announcement')
@@ -13,6 +15,21 @@ export class AnnouncementController {
   @Post()
   create(@Body() request: CreateAnnouncementCommandRequest) {
     return this.announcementService.create(request)
+  }
+
+  @Roles(Role.Admin)
+  @Patch(':id/status')
+  updateStatus(
+    @Param('id') id: string,
+    @Body() request: UpdateAnnouncementStatusRequest,
+  ) {
+    return this.announcementService.updateStatus(id, request.status)
+  }
+
+  @Public()
+  @Get('public')
+  findPublic() {
+    return this.announcementService.findPublic()
   }
 
   @Roles(Role.Admin)

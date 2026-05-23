@@ -6,9 +6,9 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common'
-import { User } from '@prisma/client'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-import { Role } from 'src/common/decorators/roles.decorator'
+import { User } from '../../generated/prisma/client'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client'
+import { Role } from '../../common/decorators/roles.decorator'
 import { Code } from 'src/common/operation-result/code.enum'
 import { PrismaService } from 'src/modules/prisma/prisma.service'
 import { CreateUserCommandRequest } from './requests/create-user-command.request'

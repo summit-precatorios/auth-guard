@@ -4,8 +4,9 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
-import { PrismaClientInitializationError } from '@prisma/client/runtime/library'
+import { PrismaClient } from '../../generated/prisma/client'
+import { PrismaClientInitializationError } from '@prisma/client/runtime/client'
+import { PrismaPg } from '@prisma/adapter-pg'
 
 @Injectable()
 export class PrismaService
@@ -13,6 +14,11 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   private readonly logger = new Logger(PrismaService.name)
+
+  constructor() {
+    const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
+    super({ adapter })
+  }
 
   async onModuleInit() {
     try {

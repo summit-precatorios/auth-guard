@@ -1,13 +1,12 @@
 generator client {
-  output          = "generated"
-  provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions", "multiSchema"]
+  output          = "../src/generated/prisma"
+  provider        = "prisma-client"
+  previewFeatures = ["postgresqlExtensions"]
   extensions      = [uuidOssp(map: "uuid-ossp")]
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
   schemas  = ["auth", "public"]
 }
 

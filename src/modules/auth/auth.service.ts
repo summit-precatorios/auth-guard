@@ -187,14 +187,21 @@ export class AuthService {
     if (payload?.role !== Role.AccountActivator)
       throw new ForbiddenException('access_denied')
 
-    const user = this.userService.findOne(payload.document)
+    const user = await this.userService.findOne(payload.document)
 
     if (!user) throw new NotFoundException('account_not_found')
 
-    return await this.userService.activeAccountByDocument(
-      payload.document,
-      request.token,
-    )
+    await this.userService.activeAccountByDocument(payload.document, request.token)
+
+    const jwtPayload: AuthJwtSignCommand = {
+      document: user.document,
+      email: user.email,
+      name: user.name,
+      image: user.image,
+      isActive: true,
+    }
+
+    return this.providerAccessToken(jwtPayload)
   }
 
   async verifyAccountByDocument(request: AuthVerifyAccountByDocumentRequest) {

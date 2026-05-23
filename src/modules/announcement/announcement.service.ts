@@ -2,10 +2,13 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  NotFoundException,
   Scope,
   UnauthorizedException,
 } from '@nestjs/common'
 import { REQUEST } from '@nestjs/core'
+import { AnnouncementStatus } from '../../generated/prisma/client'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client'
 import { Code } from 'src/common/operation-result/code.enum'
 import { CreateAnnouncementCommandRequest } from 'src/modules/announcement/requests/create-announcement-command.request'
 import { CreateAnnouncementCommandResponse } from 'src/modules/announcement/responses/create-announcement-command.response'
@@ -77,6 +80,49 @@ export class AnnouncementService {
     })
 
     return announcements
+  }
+
+  async findPublic() {
+    return this.prismaService.announcement.findMany({
+      where: {
+        status: AnnouncementStatus.APROVED,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        lawSuit: true,
+        origin: true,
+        court: true,
+        price: true,
+        salePrice: true,
+        liquidBalance: true,
+        paymentOption: true,
+        createdAt: true,
+      },
+    })
+  }
+
+  async updateStatus(id: string, status: AnnouncementStatus) {
+    try {
+      const updated = await this.prismaService.announcement.update({
+        where: { id, deletedAt: null },
+        data: { status },
+        select: { id: true, status: true },
+      })
+      return {
+        success: true,
+        message: 'resource_updated',
+        statusCode: Code.Ok,
+        data: updated,
+      }
+    } catch (err) {
+      if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {
+        throw new NotFoundException('announcement_not_found')
+      }
+      throw new BadRequestException(err)
+    }
   }
 
   // ! implement findOne

@@ -1,5 +1,5 @@
 import { MailerModule } from '@nestjs-modules/mailer'
-import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
+import { EjsAdapter } from '@nestjs-modules/mailer/adapters/ejs.adapter'
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { join } from 'path'
@@ -30,7 +30,7 @@ import { UserModule } from './modules/user/user.module'
       defaults: {
         from: '"Summit Precatórios" <info@summitprecatorios.com.br>',
       },
-      preview: true,
+      preview: false,
       template: {
         dir: join(__dirname, 'modules', 'emails', 'templates'),
         adapter: new EjsAdapter(),
