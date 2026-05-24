@@ -12,11 +12,12 @@ async function bootstrap() {
     origin: [
       'https://summitprecatorios.com.br/',
       'http://localhost:3000',
+      'http://localhost:5005',
       'https://www.summitprecatorios.com.br',
     ],
     methods: ['GET', 'POST', 'UPDATE', 'PATCH'],
   })
 
-  await app.listen(4004)
+  await app.listen(process.env.PORT || 4004)
 }
-bootstrap()
+bootstrap().catch((error) => console.log(error.message))
