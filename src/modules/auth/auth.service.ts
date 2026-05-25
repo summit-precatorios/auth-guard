@@ -101,8 +101,9 @@ export class AuthService {
         isActive: user.isActive,
       }
 
-      return this.providerAccessToken(payload)
+      return await this.providerAccessToken(payload)
     } catch (e) {
+      this._logger.error('signIn failed', e)
       throw new UnauthorizedException('invalid_credentials')
     }
   }

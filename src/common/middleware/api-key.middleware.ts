@@ -17,9 +17,7 @@ export class ApiKeyMiddleware implements NestMiddleware {
     next()
   }
 
-  private async isValidApiKey(apiKey: string | string[]): Promise<boolean> {
-    if (apiKey === process.env.API_KEY) return true
-
-    return false
+  private isValidApiKey(apiKey: string | string[]): boolean {
+    return apiKey === process.env.API_KEY
   }
 }
