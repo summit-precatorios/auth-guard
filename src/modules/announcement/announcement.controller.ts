@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common'
+import { AnyFilesInterceptor } from '@nestjs/platform-express'
 import { Role, Roles } from 'src/common/decorators/roles.decorator'
 import { Public } from 'src/common/decorators/public.decorator'
 import { AuthGuard } from 'src/common/guard/auth.guard'
@@ -13,7 +14,9 @@ export class AnnouncementController {
 
   @Roles(Role.User)
   @Post()
-  create(@Body() request: CreateAnnouncementCommandRequest) {
+  @UseInterceptors(AnyFilesInterceptor())
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  create(@Body() request: CreateAnnouncementCommandRequest, @UploadedFiles() _files: any[]) {
     return this.announcementService.create(request)
   }
 
